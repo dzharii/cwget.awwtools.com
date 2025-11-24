@@ -626,6 +626,256 @@ int main(void) {
     <licenseUrl>https://github.com/nothings/stb/blob/master/LICENSE</licenseUrl>
     <worksWellWith>stb_c_lexer</worksWellWith>
   </library>
+  <!-- tsoding 2025-11-24 -->
+  <library id="olive_c" fsName="olive_c">
+    <file>olive.c</file>
+    <url>https://raw.githubusercontent.com/tsoding/olive.c/master/olive.c</url>
+    <suffixDir>tsoding</suffixDir>
+    <version>0.0.0</version>
+    <title>olive.c</title>
+    <description>Simple 2D pixel graphics library for drawing into memory buffers and saving frames.</description>
+    <categories>graphics, 2d, rendering</categories>
+    <sampleCode><![CDATA[
+#include <stdint.h>
+#define OLIVEC_IMPLEMENTATION
+#include "olive.c"
+
+int main(void) {
+    uint32_t pixels[256 * 256] = {0};
+    Olivec_Canvas canvas = olivec_canvas(pixels, 256, 256, 256);
+    olivec_fill(canvas, 0xff202020);
+    olivec_circle(canvas, 128, 128, 64, 0xffff0000);
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>MIT license</licenseSummary>
+    <licenseUrl>https://github.com/tsoding/olive.c/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>la</worksWellWith>
+  </library>
+
+  <library id="la" fsName="la">
+    <file>la.h</file>
+    <url>https://raw.githubusercontent.com/tsoding/la/master/la.h</url>
+    <suffixDir>tsoding</suffixDir>
+    <version>0.0.0</version>
+    <title>la.h</title>
+    <description>Small linear algebra helpers for vectors and matrices used in graphics code.</description>
+    <categories>math, linear algebra, graphics</categories>
+    <sampleCode><![CDATA[
+#include <stdio.h>
+#define LA_IMPLEMENTATION
+#include "la.h"
+
+int main(void) {
+    printf("la.h included. Use it for matrices and vectors in your own code.\n");
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>MIT license</licenseSummary>
+    <licenseUrl>https://github.com/tsoding/la/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>olive_c, sv</worksWellWith>
+  </library>
+
+  <library id="sv" fsName="sv">
+    <file>sv.h</file>
+    <url>https://raw.githubusercontent.com/tsoding/sv/master/sv.h</url>
+    <suffixDir>tsoding</suffixDir>
+    <version>1.0</version>
+    <title>sv.h</title>
+    <description>String_View helpers for slicing, trimming, splitting, and parsing strings without allocations.</description>
+    <categories>strings, parsing, utility</categories>
+    <sampleCode><![CDATA[
+#include <stdio.h>
+#include <stdint.h>
+
+#define SV_IMPLEMENTATION
+#include "sv.h"
+
+int main(void) {
+    const char *line = "   answer = 42  ";
+    String_View sv = sv_from_cstr(line);
+
+    sv = sv_trim(sv);
+
+    String_View left = sv_chop_by_delim(&sv, '=');
+    left = sv_trim(left);
+    sv = sv_trim(sv);
+
+    uint64_t value = sv_to_u64(sv);
+
+    printf("key: " SV_Fmt "\n", SV_Arg(left));
+    printf("value: %llu\n", (unsigned long long) value);
+
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>MIT license</licenseSummary>
+    <licenseUrl>https://github.com/tsoding/sv/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>nob, arena</worksWellWith>
+  </library>
+
+  <library id="arena" fsName="arena">
+    <file>arena.h</file>
+    <url>https://raw.githubusercontent.com/tsoding/arena/master/arena.h</url>
+    <suffixDir>tsoding</suffixDir>
+    <version>1.0</version>
+    <title>arena.h</title>
+    <description>STB-style growing arena allocator for fast bump allocations with bulk deallocation.</description>
+    <categories>memory, allocator, utility</categories>
+    <sampleCode><![CDATA[
+#include <stdio.h>
+#include <string.h>
+#include <assert.h>
+
+#define ARENA_IMPLEMENTATION
+#include "arena.h"
+
+int main(void) {
+    Arena arena = {0};
+
+    char *greeting = arena_alloc(&arena, 32);
+    assert(greeting);
+
+    snprintf(greeting, 32, "hello, arena");
+    printf("%s\n", greeting);
+
+    int *numbers = arena_alloc(&arena, sizeof *numbers * 4);
+    assert(numbers);
+    for (int i = 0; i < 4; ++i) {
+        numbers[i] = i * i;
+    }
+    for (int i = 0; i < 4; ++i) {
+        printf("numbers[%d] = %d\n", i, numbers[i]);
+    }
+
+    arena_free(&arena);
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>MIT license</licenseSummary>
+    <licenseUrl>https://github.com/tsoding/arena/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>sv, nob</worksWellWith>
+  </library>
+
+  <library id="glob" fsName="glob">
+    <file>glob.h</file>
+    <url>https://raw.githubusercontent.com/tsoding/glob.h/master/glob.h</url>
+    <suffixDir>tsoding</suffixDir>
+    <version>1.0</version>
+    <title>glob.h</title>
+    <description>UTF-8 friendly globbing for listing files matching patterns on multiple platforms.</description>
+    <categories>filesystem, glob, utility</categories>
+    <sampleCode><![CDATA[
+#include <stdio.h>
+#include <string.h>
+
+#define GLOB_IMPLEMENTATION
+#include "glob.h"
+
+int main(void) {
+    const char *pattern = "*.c";
+    const char *text = "example.c";
+
+    if (glob_utf8(pattern, text) == 0) {
+        printf("%s matches %s\n", text, pattern);
+    } else {
+        printf("%s does not match %s\n", text, pattern);
+    }
+
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>MIT license</licenseSummary>
+    <licenseUrl>https://github.com/tsoding/glob.h/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>minirent, nob, sv</worksWellWith>
+  </library>
+
+  <library id="minirent" fsName="minirent">
+    <file>minirent.h</file>
+    <url>https://raw.githubusercontent.com/tsoding/minirent/master/minirent.h</url>
+    <suffixDir>tsoding</suffixDir>
+    <version>1.0</version>
+    <title>minirent.h</title>
+    <description>Small dirent subset for Windows so the same code can iterate directories on POSIX and Win32.</description>
+    <categories>filesystem, portability, utility</categories>
+    <sampleCode><![CDATA[
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+
+#define MINIRENT_IMPLEMENTATION
+#include "minirent.h"
+
+int main(void) {
+    DIR *dir = opendir(".");
+    assert(dir);
+
+    errno = 0;
+    struct dirent *dp = NULL;
+
+    while ((dp = readdir(dir)) != NULL) {
+        printf("%s\n", dp->d_name);
+    }
+
+    assert(errno == 0);
+
+    int err = closedir(dir);
+    assert(err == 0);
+
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>MIT license</licenseSummary>
+    <licenseUrl>https://github.com/tsoding/minirent/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>glob, nob</worksWellWith>
+  </library>
+
+  <library id="nn" fsName="nn">
+    <file>nn.h</file>
+    <url>https://raw.githubusercontent.com/tsoding/nn.h/master/nn.h</url>
+    <suffixDir>tsoding</suffixDir>
+    <version>0.0.0</version>
+    <title>nn.h</title>
+    <description>Educational header-only neural network library for small experiments in C.</description>
+    <categories>neural networks, ml, experiments</categories>
+    <sampleCode><![CDATA[
+#include <stdio.h>
+#define NN_IMPLEMENTATION
+#include "nn.h"
+
+int main(void) {
+    printf("nn.h included. Define a network and train it from your own code.\n");
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>MIT license</licenseSummary>
+    <licenseUrl>https://github.com/tsoding/nn.h/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>sv</worksWellWith>
+  </library>
+
+  <library id="nob" fsName="nob">
+    <file>nob.h</file>
+    <url>https://raw.githubusercontent.com/tsoding/nob.h/main/nob.h</url>
+    <suffixDir>tsoding</suffixDir>
+    <version>0.0.0</version>
+    <title>nob.h</title>
+    <description>Header-only helper for writing simple build recipes and project tooling in C.</description>
+    <categories>build, tooling, utility</categories>
+    <sampleCode><![CDATA[
+#include <stdio.h>
+#define NOB_IMPLEMENTATION
+#include "nob.h"
+
+int main(void) {
+    printf("nob.h included. Use it to script your C builds and utilities.\n");
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>MIT license</licenseSummary>
+    <licenseUrl>https://github.com/tsoding/nob.h/blob/main/LICENSE</licenseUrl>
+    <worksWellWith>sv, la, arena, glob, minirent</worksWellWith>
+  </library>
 
 </libraries>
     </script>
