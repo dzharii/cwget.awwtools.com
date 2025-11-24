@@ -1,12 +1,663 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hello World!</title>
+    <meta charset="utf-8">
+    <title>cwget: wget package manager for C</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            line-height: 1.5;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        h2 {
+            margin-top: 2rem;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 0.25rem;
+        }
+
+        h2 small {
+            font-size: 0.8rem;
+            color: #666;
+            margin-left: 0.5rem;
+        }
+
+        h3 {
+            margin-top: 1rem;
+            margin-bottom: 0.25rem;
+            font-size: 1rem;
+        }
+
+        section.library {
+            margin-bottom: 2rem;
+        }
+
+        pre {
+            background: #f7f7f7;
+            padding: 0.5rem 0.75rem;
+            overflow-x: auto;
+            font-size: 0.85rem;
+        }
+
+        code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        }
+
+        .platform-label {
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+            margin-bottom: 0.1rem;
+        }
+
+        .meta {
+            font-size: 0.85rem;
+            color: #555;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Hello World!</h1>
+
+    <h1>wget package manager for stb</h1>
+    <p class="meta">
+        Drop-in commands to fetch stb single file libraries with wget or curl, on POSIX shells and PowerShell. Each
+        entry also shows a tiny C sample file name you can generate.
+    </p>
+
+    <div id="library-list"></div>
+
+    <!-- XML data block with stb library metadata -->
+    <script id="stb-db" type="application/xml">
+    <libraries baseDir="external/stb" defaultVersion="0.0.0">
+
+      <library id="stb_vorbis" fsName="stb_vorbis">
+        <file>stb_vorbis.c</file>
+        <url>https://raw.githubusercontent.com/nothings/stb/master/stb_vorbis.c</url>
+        <version>1.22</version>
+        <title>stb_vorbis.c</title>
+        <description>
+          Ogg Vorbis decoder in a single C file. Compile it into your program to turn .ogg music and sound effects into raw PCM samples.
+        </description>
+        <sampleCode><![CDATA[
+#include <stdio.h>
+
+int main(void) {
+    printf("stb_vorbis example stub\n");
+    printf("Compile stb_vorbis.c together with this file to decode Ogg Vorbis audio.\n");
+    return 0;
+}
+        ]]></sampleCode>
+      </library>
+
+      <library id="stb_hexwave" fsName="stb_hexwave">
+        <file>stb_hexwave.h</file>
+        <url>https://raw.githubusercontent.com/nothings/stb/master/stb_hexwave.h</url>
+        <version>0.5</version>
+        <title>stb_hexwave.h</title>
+        <description>
+          Small procedural audio waveform synthesizer. Useful for generating simple test tones and sound effects without loading assets.
+        </description>
+        <sampleCode><![CDATA[
+#include <stdio.h>
+#include "stb_hexwave.h"
+
+int main(void) {
+    printf("stb_hexwave example stub\n");
+    printf("Use stb_hexwave to synthesize small test sounds procedurally.\n");
+    return 0;
+}
+        ]]></sampleCode>
+      </library>
+
+      <library id="stb_image" fsName="stb_image">
+        <file>stb_image.h</file>
+        <url>https://raw.githubusercontent.com/nothings/stb/master/stb_image.h</url>
+        <version>2.27</version>
+        <title>stb_image.h</title>
+        <description>
+          Image loader that decodes formats like JPEG, PNG, TGA, BMP, PSD, GIF, HDR, and PIC into raw pixels from files or memory.
+        </description>
+        <sampleCode><![CDATA[
+#include <stdio.h>
+#include "stb_image.h"
+
+int main(void) {
+    printf("stb_image example stub\n");
+    printf("Define STB_IMAGE_IMPLEMENTATION once in your project to enable the implementation.\n");
+    return 0;
+}
+        ]]></sampleCode>
+      </library>
+
+      <library id="stb_truetype" fsName="stb_truetype">
+        <file>stb_truetype.h</file>
+        <url>https://raw.githubusercontent.com/nothings/stb/master/stb_truetype.h</url>
+        <version>1.26</version>
+        <title>stb_truetype.h</title>
+        <description>
+          TrueType font parser and rasterizer that turns .ttf font files into glyph bitmaps for UI and text rendering.
+        </description>
+        <sampleCode><![CDATA[
+#include <stdio.h>
+#include "stb_truetype.h"
+
+int main(void) {
+    printf("stb_truetype example stub\n");
+    printf("Use stb_truetype to load a .ttf file and rasterize glyphs into bitmaps.\n");
+    return 0;
+}
+        ]]></sampleCode>
+      </library>
+
+      <library id="stb_image_write" fsName="stb_image_write">
+        <file>stb_image_write.h</file>
+        <url>https://raw.githubusercontent.com/nothings/stb/master/stb_image_write.h</url>
+        <version>1.16</version>
+        <title>stb_image_write.h</title>
+        <description>
+          Minimal image writer that saves pixel buffers as PNG, TGA, BMP, and other formats with a tiny API.
+        </description>
+        <sampleCode><![CDATA[
+#include <stdio.h>
+#include "stb_image_write.h"
+
+int main(void) {
+    printf("stb_image_write example stub\n");
+    printf("Use stb_image_write to dump a small test image to disk as PNG.\n");
+    return 0;
+}
+        ]]></sampleCode>
+      </library>
+
+      <library id="stb_image_resize" fsName="stb_image_resize">
+        <file>stb_image_resize.h</file>
+        <url>https://raw.githubusercontent.com/nothings/stb/master/stb_image_resize.h</url>
+        <version>0.97</version>
+        <title>stb_image_resize.h</title>
+        <description>
+          High quality image resizer that scales images up or down with reasonable speed and filtering options.
+        </description>
+        <sampleCode><![CDATA[
+#include <stdio.h>
+#include "stb_image_resize.h"
+
+int main(void) {
+    printf("stb_image_resize example stub\n");
+    printf("Combine stb_image and stb_image_resize to resize textures offline.\n");
+    return 0;
+}
+        ]]></sampleCode>
+      </library>
+
+      <library id="stb_rect_pack" fsName="stb_rect_pack">
+        <file>stb_rect_pack.h</file>
+        <url>https://raw.githubusercontent.com/nothings/stb/master/stb_rect_pack.h</url>
+        <version>1.01</version>
+        <title>stb_rect_pack.h</title>
+        <description>
+          Simple two dimensional rectangle packer for building atlas textures and sprite sheets.
+        </description>
+        <sampleCode><![CDATA[
+#include <stdio.h>
+#include "stb_rect_pack.h"
+
+int main(void) {
+    printf("stb_rect_pack example stub\n");
+    printf("Use stb_rect_pack to pack many small sprites into a single atlas.\n");
+    return 0;
+}
+        ]]></sampleCode>
+      </library>
+
+      <library id="stb_perlin" fsName="stb_perlin">
+        <file>stb_perlin.h</file>
+        <url>https://raw.githubusercontent.com/nothings/stb/master/stb_perlin.h</url>
+        <version>0.5</version>
+        <title>stb_perlin.h</title>
+        <description>
+          Perlin style revised simplex noise for generating procedural textures, height maps, and other noise fields.
+        </description>
+        <sampleCode><![CDATA[
+#include <stdio.h>
+#include "stb_perlin.h"
+
+int main(void) {
+    printf("stb_perlin example stub\n");
+    printf("Call stb_perlin noise functions to generate simple 2D or 3D noise.\n");
+    return 0;
+}
+        ]]></sampleCode>
+      </library>
+
+      <library id="stb_ds" fsName="stb_ds">
+        <file>stb_ds.h</file>
+        <url>https://raw.githubusercontent.com/nothings/stb/master/stb_ds.h</url>
+        <version>0.67</version>
+        <title>stb_ds.h</title>
+        <description>
+          Set of data structures including dynamic arrays and hash tables for C that also compile cleanly as C++.
+        </description>
+        <sampleCode><![CDATA[
+#include <stdio.h>
+#include "stb_ds.h"
+
+int main(void) {
+    printf("stb_ds example stub\n");
+    printf("Use stb_ds to get dynamic arrays and hash tables without writing your own containers.\n");
+    return 0;
+}
+        ]]></sampleCode>
+      </library>
+
+      <library id="stb_sprintf" fsName="stb_sprintf">
+        <file>stb_sprintf.h</file>
+        <url>https://raw.githubusercontent.com/nothings/stb/master/stb_sprintf.h</url>
+        <version>1.10</version>
+        <title>stb_sprintf.h</title>
+        <description>
+          Fast sprintf and snprintf replacement that focuses on speed while keeping a familiar API surface.
+        </description>
+        <sampleCode><![CDATA[
+#include <stdio.h>
+#include "stb_sprintf.h"
+
+int main(void) {
+    printf("stb_sprintf example stub\n");
+    printf("Use stb_sprintf for faster formatted printing in tight loops.\n");
+    return 0;
+}
+        ]]></sampleCode>
+      </library>
+
+      <library id="stb_textedit" fsName="stb_textedit">
+        <file>stb_textedit.h</file>
+        <url>https://raw.githubusercontent.com/nothings/stb/master/stb_textedit.h</url>
+        <version>1.14</version>
+        <title>stb_textedit.h</title>
+        <description>
+          Core logic for text editing widgets, providing cursor and selection behavior suitable for in game editors.
+        </description>
+        <sampleCode><![CDATA[
+#include <stdio.h>
+#include "stb_textedit.h"
+
+int main(void) {
+    printf("stb_textedit example stub\n");
+    printf("Embed stb_textedit into your UI code to handle basic text editing.\n");
+    return 0;
+}
+        ]]></sampleCode>
+      </library>
+
+      <library id="stb_voxel_render" fsName="stb_voxel_render">
+        <file>stb_voxel_render.h</file>
+        <url>https://raw.githubusercontent.com/nothings/stb/master/stb_voxel_render.h</url>
+        <version>0.89</version>
+        <title>stb_voxel_render.h</title>
+        <description>
+          Voxel rendering helper that draws Minecraft style voxel scenes with lighting and chunk management utilities.
+        </description>
+        <sampleCode><![CDATA[
+#include <stdio.h>
+#include "stb_voxel_render.h"
+
+int main(void) {
+    printf("stb_voxel_render example stub\n");
+    printf("Use stb_voxel_render to prototype voxel based scenes quickly.\n");
+    return 0;
+}
+        ]]></sampleCode>
+      </library>
+
+      <library id="stb_dxt" fsName="stb_dxt">
+        <file>stb_dxt.h</file>
+        <url>https://raw.githubusercontent.com/nothings/stb/master/stb_dxt.h</url>
+        <version>1.12</version>
+        <title>stb_dxt.h</title>
+        <description>
+          Real time DXT and S3TC texture compressor originally by Fabian ryg Giesen, for GPU friendly texture formats.
+        </description>
+        <sampleCode><![CDATA[
+#include <stdio.h>
+#include "stb_dxt.h"
+
+int main(void) {
+    printf("stb_dxt example stub\n");
+    printf("Feed stb_dxt raw RGBA blocks to generate compressed DXT textures.\n");
+    return 0;
+}
+        ]]></sampleCode>
+      </library>
+
+      <library id="stb_easy_font" fsName="stb_easy_font">
+        <file>stb_easy_font.h</file>
+        <url>https://raw.githubusercontent.com/nothings/stb/master/stb_easy_font.h</url>
+        <version>1.1</version>
+        <title>stb_easy_font.h</title>
+        <description>
+          Simple bitmap font for debug overlays that makes it trivial to draw text without a full font system.
+        </description>
+        <sampleCode><![CDATA[
+#include <stdio.h>
+#include "stb_easy_font.h"
+
+int main(void) {
+    printf("stb_easy_font example stub\n");
+    printf("Use stb_easy_font to draw quick debug text in your rendering code.\n");
+    return 0;
+}
+        ]]></sampleCode>
+      </library>
+
+      <library id="stb_tilemap_editor" fsName="stb_tilemap_editor">
+        <file>stb_tilemap_editor.h</file>
+        <url>https://raw.githubusercontent.com/nothings/stb/master/stb_tilemap_editor.h</url>
+        <version>0.42</version>
+        <title>stb_tilemap_editor.h</title>
+        <description>
+          Embeddable tilemap editor suitable for 2D games, running directly inside your engine or tools.
+        </description>
+        <sampleCode><![CDATA[
+#include <stdio.h>
+#include "stb_tilemap_editor.h"
+
+int main(void) {
+    printf("stb_tilemap_editor example stub\n");
+    printf("Integrate stb_tilemap_editor to edit 2D tile maps inside your game.\n");
+    return 0;
+}
+        ]]></sampleCode>
+      </library>
+
+      <library id="stb_herringbone_wang_tile" fsName="stb_herringbone_wang_tile">
+        <file>stb_herringbone_wang_tile.h</file>
+        <url>https://raw.githubusercontent.com/nothings/stb/master/stb_herringbone_wang_tile.h</url>
+        <version>0.7</version>
+        <title>stb_herringbone_wang_tile.h</title>
+        <description>
+          Generator for herringbone style Wang tile maps, used to create non repeating tiled patterns.
+        </description>
+        <sampleCode><![CDATA[
+#include <stdio.h>
+#include "stb_herringbone_wang_tile.h"
+
+int main(void) {
+    printf("stb_herringbone_wang_tile example stub\n");
+    printf("Use stb_herringbone_wang_tile to build Wang tile based map layouts.\n");
+    return 0;
+}
+        ]]></sampleCode>
+      </library>
+
+      <library id="stb_c_lexer" fsName="stb_c_lexer">
+        <file>stb_c_lexer.h</file>
+        <url>https://raw.githubusercontent.com/nothings/stb/master/stb_c_lexer.h</url>
+        <version>0.12</version>
+        <title>stb_c_lexer.h</title>
+        <description>
+          Helper for building lexers that tokenize C like languages, reducing boilerplate in parser frontends.
+        </description>
+        <sampleCode><![CDATA[
+#include <stdio.h>
+#include "stb_c_lexer.h"
+
+int main(void) {
+    printf("stb_c_lexer example stub\n");
+    printf("Use stb_c_lexer as the tokenizing front end for a small language.\n");
+    return 0;
+}
+        ]]></sampleCode>
+      </library>
+
+      <library id="stb_divide" fsName="stb_divide">
+        <file>stb_divide.h</file>
+        <url>https://raw.githubusercontent.com/nothings/stb/master/stb_divide.h</url>
+        <version>0.94</version>
+        <title>stb_divide.h</title>
+        <description>
+          Math helper that implements a more convenient 32 bit modulus and division behavior, including Euclidean divide.
+        </description>
+        <sampleCode><![CDATA[
+#include <stdio.h>
+#include "stb_divide.h"
+
+int main(void) {
+    printf("stb_divide example stub\n");
+    printf("Use stb_divide when you need well defined integer division behavior.\n");
+    return 0;
+}
+        ]]></sampleCode>
+      </library>
+
+      <library id="stb_connected_components" fsName="stb_connected_components">
+        <file>stb_connected_components.h</file>
+        <url>https://raw.githubusercontent.com/nothings/stb/master/stb_connected_components.h</url>
+        <version>0.96</version>
+        <title>stb_connected_components.h</title>
+        <description>
+          Incremental connected components on grids, useful for labeling regions in maps, images, or gameplay fields.
+        </description>
+        <sampleCode><![CDATA[
+#include <stdio.h>
+#include "stb_connected_components.h"
+
+int main(void) {
+    printf("stb_connected_components example stub\n");
+    printf("Use stb_connected_components to label regions in a 2D grid.\n");
+    return 0;
+}
+        ]]></sampleCode>
+      </library>
+
+      <library id="stb_leakcheck" fsName="stb_leakcheck">
+        <file>stb_leakcheck.h</file>
+        <url>https://raw.githubusercontent.com/nothings/stb/master/stb_leakcheck.h</url>
+        <version>0.6</version>
+        <title>stb_leakcheck.h</title>
+        <description>
+          Lightweight malloc and free leak checker that reports unreleased allocations at program exit, ideal for debug builds.
+        </description>
+        <sampleCode><![CDATA[
+#include <stdio.h>
+#include "stb_leakcheck.h"
+
+int main(void) {
+    printf("stb_leakcheck example stub\n");
+    printf("Include stb_leakcheck in a debug build to spot leaked allocations.\n");
+    return 0;
+}
+        ]]></sampleCode>
+      </library>
+
+      <library id="stb_include" fsName="stb_include">
+        <file>stb_include.h</file>
+        <url>https://raw.githubusercontent.com/nothings/stb/master/stb_include.h</url>
+        <version>0.02</version>
+        <title>stb_include.h</title>
+        <description>
+          Recursive include processor geared toward GLSL shaders and other small languages where you want lightweight include handling.
+        </description>
+        <sampleCode><![CDATA[
+#include <stdio.h>
+#include "stb_include.h"
+
+int main(void) {
+    printf("stb_include example stub\n");
+    printf("Use stb_include to preprocess shader source that needs simple #include support.\n");
+    return 0;
+}
+        ]]></sampleCode>
+      </library>
+
+    </libraries>
+  </script>
+
+    <script>
+        const xmlText = document.getElementById("stb-db").textContent.trim();
+        const xmlDoc = new DOMParser().parseFromString(xmlText, "application/xml");
+
+        const root = xmlDoc.querySelector("libraries");
+        const baseDirPosix = (root.getAttribute("baseDir") || "external/stb").replace(/\/+$/g, "");
+        const baseDirWin = baseDirPosix.replace(/\//g, "\\");
+        const defaultVersion = root.getAttribute("defaultVersion") || "0.0.0";
+
+        function xmlTextOf(parent, tagName, fallback) {
+            const el = parent.getElementsByTagName(tagName)[0];
+            if (!el) return fallback;
+            return (el.textContent || "").trim() || fallback;
+        }
+
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+        }
+
+        function collectLibraries() {
+            const libs = [];
+            const items = root.getElementsByTagName("library");
+            for (let i = 0; i < items.length; i++) {
+                const lib = items[i];
+                const id = lib.getAttribute("id");
+                const fsName = lib.getAttribute("fsName") || id;
+                const file = xmlTextOf(lib, "file", "");
+                const url = xmlTextOf(lib, "url", "");
+                const version = xmlTextOf(lib, "version", defaultVersion);
+                const title = xmlTextOf(lib, "title", fsName);
+                const description = xmlTextOf(lib, "description", "");
+                const sampleCode = xmlTextOf(lib, "sampleCode", "");
+
+                const testFile = "test_" + fsName + "_main.c";
+
+                libs.push({
+                    id,
+                    fsName,
+                    file,
+                    url,
+                    version,
+                    title,
+                    description,
+                    sampleCode,
+                    testFile
+                });
+            }
+            return libs;
+        }
+
+        function buildCommands(lib) {
+            const dirPosix = baseDirPosix;
+            const dirWin = baseDirWin;
+
+            const dirPosixQ = '"' + dirPosix + '"';
+            const dirWinQ = '"' + dirWin + '"';
+            const urlQ = '"' + lib.url + '"';
+
+            const outFilePosixQ = '"' + dirPosix + '/' + lib.file + '"';
+            const outFileWinQ = '"' + dirWin + '\\\\' + lib.file + '"';
+
+            const testFileQPosix = '"' + lib.testFile + '"';
+            const testFileQWin = '"' + lib.testFile + '"';
+            const exePosixQ = '"' + lib.fsName + '_example"';
+
+            const wgetPosix = 'mkdir -p ' + dirPosixQ +
+                ' && wget -P ' + dirPosixQ + ' ' + urlQ;
+
+            const curlPosix = 'mkdir -p ' + dirPosixQ +
+                ' && curl -L ' + urlQ + ' -o ' + outFilePosixQ;
+
+            const curlPwsh = 'mkdir ' + dirWinQ + ' -Force | Out-Null; ' +
+                'curl ' + urlQ + ' -OutFile ' + outFileWinQ;
+
+            const wgetPwsh = 'mkdir ' + dirWinQ + ' -Force | Out-Null; ' +
+                'wget ' + urlQ + ' -OutFile ' + outFileWinQ;
+
+            const iwrPwsh = 'mkdir ' + dirWinQ + ' -Force | Out-Null; ' +
+                'Invoke-WebRequest ' + urlQ + ' -OutFile ' + outFileWinQ;
+
+            const ccPosix = 'cc -Wall -Wextra -I' + dirPosixQ +
+                ' ' + testFileQPosix + ' -o ' + exePosixQ;
+
+            const clWin = 'cl /W4 /I' + dirWinQ + ' ' + testFileQWin;
+
+            return {
+                wgetPosix,
+                curlPosix,
+                curlPwsh,
+                wgetPwsh,
+                iwrPwsh,
+                ccPosix,
+                clWin
+            };
+        }
+
+        function renderLibrary(lib) {
+            const commands = buildCommands(lib);
+            const section = document.createElement("section");
+            section.className = "library";
+
+            const sampleEscaped = escapeHtml(lib.sampleCode);
+            const wgetPosixEsc = escapeHtml(commands.wgetPosix);
+            const curlPosixEsc = escapeHtml(commands.curlPosix);
+            const curlPwshEsc = escapeHtml(commands.curlPwsh);
+            const wgetPwshEsc = escapeHtml(commands.wgetPwsh);
+            const iwrPwshEsc = escapeHtml(commands.iwrPwsh);
+            const ccPosixEsc = escapeHtml(commands.ccPosix);
+            const clWinEsc = escapeHtml(commands.clWin);
+
+            section.innerHTML =
+                '<h2>' + lib.title +
+                ' <small>v' + lib.version + '</small></h2>' +
+                '<p>' + escapeHtml(lib.description) + '</p>' +
+
+                '<div class="meta">Raw file: ' + escapeHtml(baseDirPosix + '/' + lib.file) +
+                ' &middot; Test file: ' + escapeHtml(lib.testFile) + '</div>' +
+
+                '<h3>Download commands</h3>' +
+
+                '<div class="platform-label">POSIX shell, wget</div>' +
+                '<pre><code>' + wgetPosixEsc + '</code></pre>' +
+
+                '<div class="platform-label">POSIX shell, curl</div>' +
+                '<pre><code>' + curlPosixEsc + '</code></pre>' +
+
+                '<div class="platform-label">PowerShell, curl (alias)</div>' +
+                '<pre><code>' + curlPwshEsc + '</code></pre>' +
+
+                '<div class="platform-label">PowerShell, wget (alias)</div>' +
+                '<pre><code>' + wgetPwshEsc + '</code></pre>' +
+
+                '<div class="platform-label">PowerShell, Invoke-WebRequest</div>' +
+                '<pre><code>' + iwrPwshEsc + '</code></pre>' +
+
+                '<h3>Compile commands for the sample</h3>' +
+                '<div class="platform-label">POSIX shell</div>' +
+                '<pre><code>' + ccPosixEsc + '</code></pre>' +
+                '<div class="platform-label">Windows, PowerShell + cl</div>' +
+                '<pre><code>' + clWinEsc + '</code></pre>' +
+
+                '<h3>Sample file: ' + escapeHtml(lib.testFile) + '</h3>' +
+                '<pre><code>' + sampleEscaped + '</code></pre>';
+
+            return section;
+        }
+
+        const libs = collectLibraries();
+        const listRoot = document.getElementById("library-list");
+        libs.forEach(function (lib) {
+            listRoot.appendChild(renderLibrary(lib));
+        });
+    </script>
+
 </body>
+
 </html>
