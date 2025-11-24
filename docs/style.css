@@ -92,6 +92,46 @@ a:hover {
   margin-bottom: 1.25rem;
 }
 
+.hero-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.brand {
+  display: flex;
+  gap: 0.9rem;
+  align-items: center;
+  min-width: 0;
+}
+
+.logo {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  flex-shrink: 0;
+}
+
+.project-link {
+  align-self: center;
+  text-decoration: none;
+  padding: 0.55rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  font-weight: 700;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+}
+
+.project-link:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
 .title-block {
   margin-bottom: 1rem;
 }
