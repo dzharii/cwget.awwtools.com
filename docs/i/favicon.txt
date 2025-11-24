@@ -1,0 +1,2 @@
+magick ship-1024.png -define icon:auto-resize=16,32,48,64 favicon.ico
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
