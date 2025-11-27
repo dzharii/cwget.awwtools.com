@@ -17,7 +17,7 @@ Each `<library>` element represents one C library. The following fields are requ
 
 Every library must have an identifier attribute `id` that is stable and unique across the catalog. Every library must have an attribute `fsName` that is safe for use in file names and test file names.
 
-Every library must have a `<file>` element that contains the default file name for the main source or header, for example `stb_image.h`. Every library must have a `<url>` element that contains the absolute HTTP URL used to download that file.
+Every library must define a `<files>` container that holds one or more `<file>` elements. Each `<file>` element must provide a `path` attribute that contains the default file name for the source or header (for example `stb_image.h`) and a `url` attribute with the absolute HTTP URL used to download that file. Single-file libraries still use the same structure with exactly one `<file>` entry.
 
 Every library must have a `<suffixDir>` element. This suffix directory is appended to `baseDir` to form the installation directory for that library. For stb libraries this value is `stb`, so the full path becomes `external/stb`. Other libraries can set other suffixes or leave it empty to install directly into `external`.
 

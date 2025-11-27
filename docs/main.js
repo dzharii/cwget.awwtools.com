@@ -113,6 +113,32 @@
       .filter(Boolean);
   }
 
+  function parseFiles(node, id) {
+    const filesParent = node.querySelector("files");
+    const fileNodes = filesParent ? Array.from(filesParent.querySelectorAll("file")) : [];
+
+    if (fileNodes.length > 0) {
+      return fileNodes.map((fileNode, index) => {
+        const path = (fileNode.getAttribute("path") || fileNode.textContent || "").trim();
+        ensureContent(path, `files[${index}].path`, id);
+
+        const inlineUrl = (fileNode.getAttribute("url") || fileNode.getAttribute("href") || "").trim();
+        const nestedUrl = ((fileNode.querySelector("url") || {}).textContent || "").trim();
+        const url = inlineUrl || nestedUrl;
+        ensureContent(url, `files[${index}].url`, id);
+
+        return { path, url };
+      });
+    }
+
+    // Legacy support: single <file> and <url> entries.
+    const legacyPath = ((node.querySelector("file") || {}).textContent || "").trim();
+    const legacyUrl = ((node.querySelector("url") || {}).textContent || "").trim();
+    ensureContent(legacyPath, "file", id);
+    ensureContent(legacyUrl, "url", id);
+    return [{ path: legacyPath, url: legacyUrl }];
+  }
+
   function readXml() {
     const xmlScript = document.getElementById("library-xml");
     if (!xmlScript) {
@@ -141,11 +167,7 @@
       ensureContent(id, "id", id || "unknown");
 
       const fsName = node.getAttribute("fsName") || id;
-      const file = (node.querySelector("file") || {}).textContent || "";
-      ensureContent(file.trim(), "file", id);
-
-      const url = (node.querySelector("url") || {}).textContent || "";
-      ensureContent(url.trim(), "url", id);
+      const files = parseFiles(node, id);
 
       const suffixDir = ((node.querySelector("suffixDir") || {}).textContent || "").trim();
       ensureContent(suffixDir, "suffixDir", id);
@@ -177,13 +199,11 @@
         : [];
 
       const testFile = `test_${fsName}_main.c`;
-      const needsLibrarySource = file.trim().toLowerCase().endsWith(".c");
 
       libraries.push({
         id,
         fsName,
-        file: file.trim(),
-        url: url.trim(),
+        files,
         suffixDir,
         version,
         title,
@@ -194,7 +214,6 @@
         licenseUrl,
         worksWellWith,
         testFile,
-        needsLibrarySource,
       });
     });
 
@@ -253,51 +272,60 @@
 
   function computeRenderData(lib) {
     const dirs = buildInstallDirs(state.settings.baseDir, lib.suffixDir);
-    const posixLibraryPath = `${dirs.posix}/${lib.file}`;
-    const winLibraryPath = `${dirs.win}\\${lib.file.replace(/\//g, "\\")}`;
+    const posixLibraryPaths = lib.files.map((file) => `${dirs.posix}/${file.path}`);
+    const winLibraryPaths = lib.files.map((file) => `${dirs.win}\\${file.path.replace(/\//g, "\\")}`);
     const posixTestPath = `${dirs.posix}/${lib.testFile}`;
     const winTestPath = `${dirs.win}\\${lib.testFile}`;
     const posixExePath = `${dirs.posix}/${lib.fsName}_example`;
     const winExePath = `${dirs.win}\\${lib.fsName}_example.exe`;
 
-    const urlPosix = quote(lib.url, "posix");
-    const urlWin = quote(lib.url, "powershell");
     const dirPosixQ = quote(dirs.posix, "posix");
     const dirWinQ = quote(dirs.win, "powershell");
-    const libPosixQ = quote(posixLibraryPath, "posix");
-    const libWinQ = quote(winLibraryPath, "powershell");
+    const posixUrls = lib.files.map((file) => quote(file.url, "posix"));
+    const winUrls = lib.files.map((file) => quote(file.url, "powershell"));
+    const libPosixQ = posixLibraryPaths.map((path) => quote(path, "posix"));
+    const libWinQ = winLibraryPaths.map((path) => quote(path, "powershell"));
     const testPosixQ = quote(posixTestPath, "posix");
     const testWinQ = quote(winTestPath, "powershell");
     const exePosixQ = quote(posixExePath, "posix");
     const exeWinQ = quote(winExePath, "powershell");
 
-    const wgetPosix = `mkdir -p ${dirPosixQ} && wget -O ${libPosixQ} ${urlPosix}`;
-    const curlPosix = `mkdir -p ${dirPosixQ} && curl -L ${urlPosix} -o ${libPosixQ}`;
+    const wgetPosixParts = lib.files.map((_, index) => `wget -O ${libPosixQ[index]} ${posixUrls[index]}`);
+    const curlPosixParts = lib.files.map((_, index) => `curl -L ${posixUrls[index]} -o ${libPosixQ[index]}`);
+    const wgetPosix = ["mkdir -p " + dirPosixQ, ...wgetPosixParts].join(" && ");
+    const curlPosix = ["mkdir -p " + dirPosixQ, ...curlPosixParts].join(" && ");
 
-    const curlPwsh = `New-Item -ItemType Directory -Path ${dirWinQ} -Force | Out-Null; curl ${urlWin} -OutFile ${libWinQ}`;
-    const wgetPwsh = `New-Item -ItemType Directory -Path ${dirWinQ} -Force | Out-Null; wget ${urlWin} -OutFile ${libWinQ}`;
-    const iwrPwsh = `New-Item -ItemType Directory -Path ${dirWinQ} -Force | Out-Null; Invoke-WebRequest ${urlWin} -OutFile ${libWinQ}`;
+    const curlPwshParts = lib.files.map((_, index) => `curl ${winUrls[index]} -OutFile ${libWinQ[index]}`);
+    const wgetPwshParts = lib.files.map((_, index) => `wget ${winUrls[index]} -OutFile ${libWinQ[index]}`);
+    const iwrPwshParts = lib.files.map((_, index) => `Invoke-WebRequest ${winUrls[index]} -OutFile ${libWinQ[index]}`);
+    const mkdirPwsh = `New-Item -ItemType Directory -Path ${dirWinQ} -Force | Out-Null`;
+    const curlPwsh = [mkdirPwsh, ...curlPwshParts].join("; ");
+    const wgetPwsh = [mkdirPwsh, ...wgetPwshParts].join("; ");
+    const iwrPwsh = [mkdirPwsh, ...iwrPwshParts].join("; ");
 
-    const compilePosix =
-      `cc -Wall -Wextra -I${dirPosixQ} ${testPosixQ}` +
-      (lib.needsLibrarySource ? ` ${libPosixQ}` : "") +
-      ` -o ${exePosixQ}`;
-    const compileWin =
-      `cl /W4 /I${dirWinQ} ${testWinQ}` +
-      (lib.needsLibrarySource ? ` ${libWinQ}` : "") +
-      ` /Fe${exeWinQ}`;
+    const posixSourceArgs = lib.files
+      .map((file, index) => ({ file, path: libPosixQ[index] }))
+      .filter((entry) => entry.file.path.toLowerCase().endsWith(".c"))
+      .map((entry) => entry.path)
+      .join(" ");
+    const winSourceArgs = lib.files
+      .map((file, index) => ({ file, path: libWinQ[index] }))
+      .filter((entry) => entry.file.path.toLowerCase().endsWith(".c"))
+      .map((entry) => entry.path)
+      .join(" ");
+
+    const compilePosix = `cc -Wall -Wextra -I${dirPosixQ} ${testPosixQ}` + (posixSourceArgs ? ` ${posixSourceArgs}` : "") + ` -o ${exePosixQ}`;
+    const compileWin = `cl /W4 /I${dirWinQ} ${testWinQ}` + (winSourceArgs ? ` ${winSourceArgs}` : "") + ` /Fe${exeWinQ}`;
 
     const posixScript = [
       "#!/usr/bin/env bash",
       "set -euo pipefail",
       `BASE_DIR=${dirPosixQ}`,
-      `LIB_PATH=${libPosixQ}`,
       `TEST_PATH=${testPosixQ}`,
-      `URL=${urlPosix}`,
       "",
       "mkdir -p \"$BASE_DIR\"",
-      "echo \"Downloading library file...\"",
-      "curl -L \"$URL\" -o \"$LIB_PATH\"",
+      "echo \"Downloading library files...\"",
+      ...lib.files.map((file, index) => `curl -L ${posixUrls[index]} -o ${libPosixQ[index]}`),
       "echo \"Writing sample program...\"",
       "cat > \"$TEST_PATH\" <<'CWGET_SAMPLE_END'",
       lib.sampleCode.trim(),
@@ -311,13 +339,11 @@
     const psScriptLines = [
       "# PowerShell install and build script generated by cwget",
       `$BaseDir = ${dirWinQ}`,
-      `$LibraryPath = ${libWinQ}`,
       `$TestPath = ${testWinQ}`,
-      `$DownloadUrl = ${urlWin}`,
       "",
       'New-Item -ItemType Directory -Force -Path $BaseDir | Out-Null',
-      'Write-Host "Downloading library file..."',
-      'Invoke-WebRequest -Uri $DownloadUrl -OutFile $LibraryPath',
+      'Write-Host "Downloading library files..."',
+      ...lib.files.map((file, index) => `Invoke-WebRequest -Uri ${winUrls[index]} -OutFile ${libWinQ[index]}`),
       'Write-Host "Writing sample program..."',
       '@"',
       lib.sampleCode.trim(),
@@ -331,8 +357,8 @@
     return {
       dirs,
       paths: {
-        posixLibraryPath,
-        winLibraryPath,
+        posixLibraryPaths,
+        winLibraryPaths,
         posixTestPath,
         winTestPath,
         posixExePath,
@@ -360,9 +386,9 @@
       if (!query) return true;
       const haystack = [
         lib.title,
-        lib.file,
         lib.description,
         lib.categories.join(" "),
+        lib.files.map((file) => file.path).join(" "),
       ]
         .join(" ")
         .toLowerCase();
@@ -480,6 +506,10 @@
       installPath.className = "install-path";
       installPath.textContent = `Install directory: ${renderData.dirs.posix}`;
 
+      const fileList = document.createElement("div");
+      fileList.className = "file-list";
+      fileList.textContent = `Files: ${lib.files.map((file) => file.path).join(", ")}`;
+
       const tagsRow = document.createElement("div");
       tagsRow.className = "tag-row";
       lib.categories.forEach((tag) => {
@@ -488,6 +518,7 @@
 
       header.appendChild(title);
       header.appendChild(installPath);
+      header.appendChild(fileList);
       header.appendChild(tagsRow);
 
       const description = document.createElement("p");
