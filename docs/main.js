@@ -113,6 +113,11 @@
       .filter(Boolean);
   }
 
+  function makeLibTitle(lib) {
+    const pathLabel = lib.suffixDir ? `${lib.suffixDir}/${lib.fsName}` : lib.fsName;
+    return { pathLabel, fullTitle: `${pathLabel} — ${lib.title}` };
+  }
+
   function parseFiles(node, id) {
     const filesParent = node.querySelector("files");
     const fileNodes = filesParent ? Array.from(filesParent.querySelectorAll("file")) : [];
@@ -487,6 +492,7 @@
 
     state.filtered.forEach((lib) => {
       const renderData = computeRenderData(lib);
+      const titleParts = makeLibTitle(lib);
       const section = document.createElement("section");
       section.className = "library";
       section.id = lib.id;
@@ -495,8 +501,7 @@
       header.className = "library-header";
 
       const title = document.createElement("h2");
-      const pathLabel = lib.suffixDir ? `${lib.suffixDir}/${lib.fsName}` : lib.fsName;
-      title.textContent = `${pathLabel}`;
+      title.textContent = titleParts.pathLabel;
 
       const version = document.createElement("span");
       version.className = "version";
@@ -620,8 +625,8 @@
       const li = document.createElement("li");
       const link = document.createElement("a");
       link.href = `#${lib.id}`;
-      const pathLabel = lib.suffixDir ? `${lib.suffixDir}/${lib.fsName}` : lib.fsName;
-      link.textContent = `${pathLabel}`;
+      const titleParts = makeLibTitle(lib);
+      link.textContent = titleParts.pathLabel;
       li.appendChild(link);
       fragment.appendChild(li);
     });
