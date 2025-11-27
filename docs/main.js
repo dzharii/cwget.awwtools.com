@@ -96,7 +96,7 @@
     const combined = cleanSuffix ? `${cleanBase}/${cleanSuffix}` : cleanBase;
     return {
       posix: combined,
-      win: combined.replace(/\//g, "\\"),
+      win: combined, // PowerShell accepts forward slashes; keep paths consistent
     };
   }
 
@@ -273,11 +273,11 @@
   function computeRenderData(lib) {
     const dirs = buildInstallDirs(state.settings.baseDir, lib.suffixDir);
     const posixLibraryPaths = lib.files.map((file) => `${dirs.posix}/${file.path}`);
-    const winLibraryPaths = lib.files.map((file) => `${dirs.win}\\${file.path.replace(/\//g, "\\")}`);
+    const winLibraryPaths = lib.files.map((file) => `${dirs.win}/${file.path}`);
     const posixTestPath = `${dirs.posix}/${lib.testFile}`;
-    const winTestPath = `${dirs.win}\\${lib.testFile}`;
+    const winTestPath = `${dirs.win}/${lib.testFile}`;
     const posixExePath = `${dirs.posix}/${lib.fsName}_example`;
-    const winExePath = `${dirs.win}\\${lib.fsName}_example.exe`;
+    const winExePath = `${dirs.win}/${lib.fsName}_example.exe`;
 
     const dirPosixQ = quote(dirs.posix, "posix");
     const dirWinQ = quote(dirs.win, "powershell");
@@ -495,7 +495,8 @@
       header.className = "library-header";
 
       const title = document.createElement("h2");
-      title.textContent = `${lib.title} `;
+      const pathLabel = lib.suffixDir ? `${lib.suffixDir}/${lib.fsName}` : lib.fsName;
+      title.textContent = `${pathLabel}`;
 
       const version = document.createElement("span");
       version.className = "version";
@@ -619,7 +620,8 @@
       const li = document.createElement("li");
       const link = document.createElement("a");
       link.href = `#${lib.id}`;
-      link.textContent = lib.title;
+      const pathLabel = lib.suffixDir ? `${lib.suffixDir}/${lib.fsName}` : lib.fsName;
+      link.textContent = `${pathLabel}`;
       li.appendChild(link);
       fragment.appendChild(li);
     });
@@ -776,4 +778,4 @@
   }
 
   document.addEventListener("DOMContentLoaded", init);
-})(); 
+})();
