@@ -2,96 +2,96 @@
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <title>cwget: wget package manager for C</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <title>cwget: wget package manager for C</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body class="theme-system" background="#002b36">
-    <header class="page-header">
-        <div class="hero-row">
-            <div class="brand">
-                <img class="logo" src="i/ship-0072.png" alt="cwget logo: sailing ship" width="72" height="72">
-                <div class="title-block">
-                    <h1>cwget: wget package manager for C</h1>
-                    <p class="lede">
-                        Download single-file C libraries with ready-made commands, install scripts, and tiny sample
-                        programs. Configure the base directory, platform, and theme to match your project, then copy
-                        commands with one click.
-                    </p>
-                </div>
-            </div>
-            <a class="project-link" href="https://github.com/dzharii/cwget.awwtools.com" target="_blank"
-                rel="noopener noreferrer">
-                View on GitHub
-            </a>
+  <header class="page-header">
+    <div class="hero-row">
+      <div class="brand">
+        <img class="logo" src="i/ship-0072.png" alt="cwget logo: sailing ship" width="72" height="72">
+        <div class="title-block">
+          <h1>cwget: wget package manager for C</h1>
+          <p class="lede">
+            Download single-file C libraries with ready-made commands, install scripts, and tiny sample
+            programs. Configure the base directory, platform, and theme to match your project, then copy
+            commands with one click.
+          </p>
         </div>
+      </div>
+      <a class="project-link" href="https://github.com/dzharii/cwget.awwtools.com" target="_blank"
+        rel="noopener noreferrer">
+        View on GitHub
+      </a>
+    </div>
 
-        <section class="settings">
-            <div class="setting">
-                <label for="baseDirInput">Base directory</label>
-                <div class="input-with-note">
-                    <input id="baseDirInput" type="text" autocomplete="off" />
-                    <span class="override-indicator" id="baseDirOverride">Using saved value</span>
-                </div>
+    <section class="settings">
+      <div class="setting">
+        <label for="baseDirInput">Base directory</label>
+        <div class="input-with-note">
+          <input id="baseDirInput" type="text" autocomplete="off" />
+          <span class="override-indicator" id="baseDirOverride">Using saved value</span>
+        </div>
+      </div>
+      <div class="setting">
+        <label for="platformSelect">Platform</label>
+        <div class="input-with-note">
+          <select id="platformSelect">
+            <option value="posix">POSIX</option>
+            <option value="powershell">PowerShell</option>
+          </select>
+          <span class="override-indicator" id="platformOverride">Using saved value</span>
+        </div>
+      </div>
+      <div class="setting">
+        <label for="themeSelect">Theme</label>
+        <div class="input-with-note theme-note">
+          <div class="select-row">
+            <select id="themeSelect">
+              <option value="system">System</option>
+              <option value="light">Light</option>
+              <option value="dark">Dark</option>
+            </select>
+            <div class="theme-swatches" aria-hidden="true">
+              <span class="swatch light"></span>
+              <span class="swatch dark"></span>
             </div>
-            <div class="setting">
-                <label for="platformSelect">Platform</label>
-                <div class="input-with-note">
-                    <select id="platformSelect">
-                        <option value="posix">POSIX</option>
-                        <option value="powershell">PowerShell</option>
-                    </select>
-                    <span class="override-indicator" id="platformOverride">Using saved value</span>
-                </div>
-            </div>
-            <div class="setting">
-                <label for="themeSelect">Theme</label>
-                <div class="input-with-note theme-note">
-                    <div class="select-row">
-                        <select id="themeSelect">
-                            <option value="system">System</option>
-                            <option value="light">Light</option>
-                            <option value="dark">Dark</option>
-                        </select>
-                        <div class="theme-swatches" aria-hidden="true">
-                            <span class="swatch light"></span>
-                            <span class="swatch dark"></span>
-                        </div>
-                    </div>
-                    <span class="override-indicator" id="themeOverride">Using saved value</span>
-                </div>
-            </div>
-            <div class="setting reset-setting">
-                <button id="resetSettings" type="button">Reset settings</button>
-            </div>
-        </section>
-    </header>
+          </div>
+          <span class="override-indicator" id="themeOverride">Using saved value</span>
+        </div>
+      </div>
+      <div class="setting reset-setting">
+        <button id="resetSettings" type="button">Reset settings</button>
+      </div>
+    </section>
+  </header>
 
-    <main>
-        <section class="filters">
-            <div class="search-block">
-                <label for="searchInput">Search 🔍</label>
-                <input id="searchInput" type="search" placeholder="Filter by title, file name, description, or tags"
-                    autocomplete="off" />
-            </div>
-            <div class="filter-hint" id="filterHint">Showing all libraries</div>
-        </section>
+  <main>
+    <section class="filters">
+      <div class="search-block">
+        <label for="searchInput">Search 🔍</label>
+        <input id="searchInput" type="search" placeholder="Filter by title, file name, description, or tags"
+          autocomplete="off" />
+      </div>
+      <div class="filter-hint" id="filterHint">Showing all libraries</div>
+    </section>
 
-        <section class="toc">
-            <h2>Table of contents</h2>
-            <ul id="tocList"></ul>
-        </section>
+    <section class="toc">
+      <h2>Table of contents</h2>
+      <ul id="tocList"></ul>
+    </section>
 
-        <section id="messages" aria-live="polite"></section>
+    <section id="messages" aria-live="polite"></section>
 
-        <section id="libraryContainer"></section>
-    </main>
+    <section id="libraryContainer"></section>
+  </main>
 
-    <section id="data">
-        <script id="library-xml" type="application/xml">
+  <section id="data">
+    <script id="library-xml" type="application/xml">
 <libraries baseDir="external" defaultVersion="0.0.0">
   <library id="stb_vorbis" fsName="stb_vorbis">
     <files>
@@ -1205,11 +1205,111 @@ int main(void) {
     </documentation>
   </library>
 
+  <library id="rgfw" fsName="rgfw">
+    <files>
+      <file path="RGFW.h" url="https://raw.githubusercontent.com/ColleagueRiley/RGFW/main/RGFW.h" />
+    </files>
+    <suffixDir>rgfw</suffixDir>
+    <version>1.8.1</version>
+    <title>RGFW.h</title>
+    <description>Single-header C99 window and input framework for creating cross-platform windows and graphics contexts.</description>
+    <categories>windowing, graphics, input</categories>
+    <sampleCode><![CDATA[
+#define RGFW_IMPLEMENTATION
+#include "RGFW.h"
+
+int main(void) {
+    RGFW_window *win = RGFW_createWindow(
+        "RGFW example",
+        100, 100,
+        640, 480,
+        RGFW_windowCenter
+    );
+    if (!win) {
+        return 1;
+    }
+
+    while (!RGFW_window_shouldClose(win)) {
+        RGFW_event event;
+        while (RGFW_window_checkEvent(win, &event)) {
+            if (event.type == RGFW_quit) {
+                RGFW_window_setShouldClose(win, 1);
+            }
+        }
+    }
+
+    RGFW_window_close(win);
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>Zlib license</licenseSummary>
+    <licenseUrl>https://github.com/ColleagueRiley/RGFW/blob/main/LICENSE</licenseUrl>
+    <worksWellWith>stb_image, stb_truetype, olive_c</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/ColleagueRiley/RGFW</url>
+        <urlDescription>Source code (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://colleagueriley.github.io/RGFW/</url>
+        <urlDescription>
+          RGFW wasm Examples.
+        </urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/ColleagueRiley/RGFW#readme</url>
+        <urlDescription>Project README</urlDescription>
+      </link>
+    </documentation>
+  </library>
+  <library id="tiny_bignum_c" fsName="tiny_bignum_c">
+    <files>
+      <file path="bn.h" url="https://raw.githubusercontent.com/kokke/tiny-bignum-c/master/bn.h" />
+      <file path="bn.c" url="https://raw.githubusercontent.com/kokke/tiny-bignum-c/master/bn.c" />
+    </files>
+    <suffixDir>kokke</suffixDir>
+    <version>0.0.0</version>
+    <title>bn.h</title>
+    <description>Small portable arbitrary-precision unsigned integer arithmetic for C, providing basic big integer operations on fixed-size buffers.</description>
+    <categories>math, big integers, arbitrary-precision</categories>
+    <sampleCode><![CDATA[
+#include <stdio.h>
+#include "bn.h"
+
+int main(void) {
+    struct bn a, b, c;
+
+    bignum_init(&a);
+    bignum_init(&b);
+    bignum_init(&c);
+
+    bignum_from_int(&a, 123);
+    bignum_from_int(&b, 456);
+    bignum_add(&a, &b, &c);
+
+    printf("123 + 456 = %d\n", bignum_to_int(&c));
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>Unlicense (public domain)</licenseSummary>
+    <licenseUrl>https://github.com/kokke/tiny-bignum-c/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>sv</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/kokke/tiny-bignum-c</url>
+        <urlDescription>Source code (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/kokke/tiny-bignum-c#readme</url>
+        <urlDescription>Project README</urlDescription>
+      </link>
+    </documentation>
+  </library>
 </libraries>
     </script>
-    </section>
+  </section>
 
-    <script src="main.js"></script>
+  <script src="main.js"></script>
 </body>
 
 </html>
