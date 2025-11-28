@@ -113,6 +113,17 @@
       .filter(Boolean);
   }
 
+  function formatDisplayUrl(url) {
+    try {
+      const parsed = new URL(url);
+      const cleanedPath = parsed.pathname.replace(/\/$/, "");
+      return `${parsed.hostname}${cleanedPath}`;
+    } catch (error) {
+      logError("url format failed", error);
+      return url;
+    }
+  }
+
   function makeLibTitle(lib) {
     const pathLabel = lib.suffixDir ? `${lib.suffixDir}/${lib.fsName}` : lib.fsName;
     return { pathLabel, fullTitle: `${pathLabel} — ${lib.title}` };
@@ -142,6 +153,29 @@
     ensureContent(legacyPath, "file", id);
     ensureContent(legacyUrl, "url", id);
     return [{ path: legacyPath, url: legacyUrl }];
+  }
+
+  function parseDocumentation(node, id) {
+    const docsRoot = node.querySelector("documentation");
+    if (!docsRoot) {
+      throw new Error(`Missing documentation block for library "${id}"`);
+    }
+
+    const links = Array.from(docsRoot.querySelectorAll("link")).map((linkNode, index) => {
+      const url = ((linkNode.querySelector("url") || {}).textContent || linkNode.getAttribute("href") || "").trim();
+      ensureContent(url, `documentation[${index}].url`, id);
+
+      const urlDescription = ((linkNode.querySelector("urlDescription") || {}).textContent || "").trim();
+      ensureContent(urlDescription, `documentation[${index}].urlDescription`, id);
+
+      return { url, label: urlDescription };
+    });
+
+    if (links.length === 0) {
+      throw new Error(`Missing documentation links for library "${id}"`);
+    }
+
+    return links;
   }
 
   function readXml() {
@@ -203,6 +237,7 @@
             .slice(0, 7)
         : [];
 
+      const documentation = parseDocumentation(node, id);
       const testFile = `test_${fsName}_main.c`;
 
       libraries.push({
@@ -218,6 +253,7 @@
         licenseSummary,
         licenseUrl,
         worksWellWith,
+        documentation,
         testFile,
       });
     });
@@ -457,6 +493,43 @@
     return wrapper;
   }
 
+  function createDocumentationSection(links) {
+    if (!links || links.length === 0) return null;
+
+    const section = document.createElement("div");
+    section.className = "documentation";
+
+    const title = document.createElement("h3");
+    title.textContent = "Documentation";
+    section.appendChild(title);
+
+    const list = document.createElement("div");
+    list.className = "documentation-list";
+
+    links.forEach((link) => {
+      const item = document.createElement("a");
+      item.className = "doc-card";
+      item.href = link.url;
+      item.target = "_blank";
+      item.rel = "noopener noreferrer";
+
+      const label = document.createElement("div");
+      label.className = "doc-label";
+      label.textContent = link.label;
+
+      const urlText = document.createElement("div");
+      urlText.className = "doc-url";
+      urlText.textContent = formatDisplayUrl(link.url);
+
+      item.appendChild(label);
+      item.appendChild(urlText);
+      list.appendChild(item);
+    });
+
+    section.appendChild(list);
+    return section;
+  }
+
   function createToggle(label, contentEl, expanded) {
     const wrapper = document.createElement("div");
     wrapper.className = "toggle";
@@ -541,6 +614,8 @@
       license.innerHTML = "License: ";
       license.appendChild(licenseLink);
 
+      const documentation = createDocumentationSection(lib.documentation);
+
       const commandsSection = document.createElement("div");
       commandsSection.className = "commands";
       const commandsTitle = document.createElement("h3");
@@ -602,6 +677,9 @@
       section.appendChild(header);
       section.appendChild(description);
       section.appendChild(license);
+      if (documentation) {
+        section.appendChild(documentation);
+      }
       section.appendChild(commandsSection);
       section.appendChild(compileToggle);
       section.appendChild(scriptToggle);
