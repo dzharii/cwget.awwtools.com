@@ -4,16 +4,13 @@
   const LOG_PREFIX = "[wget-pm]";
   const STORAGE_KEYS = {
     baseDir: "cwget.baseDir",
-    platform: "cwget.platform",
     theme: "cwget.theme",
   };
 
   const selectors = {
     baseDirInput: document.getElementById("baseDirInput"),
     baseDirOverride: document.getElementById("baseDirOverride"),
-    platformOverride: document.getElementById("platformOverride"),
     themeOverride: document.getElementById("themeOverride"),
-    platformSelect: document.getElementById("platformSelect"),
     themeSelect: document.getElementById("themeSelect"),
     resetButton: document.getElementById("resetSettings"),
     searchInput: document.getElementById("searchInput"),
@@ -27,13 +24,13 @@
     baseDirDefault: "external",
     settings: {
       baseDir: "external",
-      platform: "posix",
       theme: "system",
     },
     libraries: [],
     filterQuery: "",
     hashTarget: decodeURIComponent(window.location.hash || "").replace("#", ""),
     libraryLookup: {},
+    shellSelections: {},
   };
 
   let toastEl = null;
@@ -122,6 +119,14 @@
       logError("url format failed", error);
       return url;
     }
+  }
+
+  function getShellForLibrary(libId) {
+    return state.shellSelections[libId] || "bash";
+  }
+
+  function setShellForLibrary(libId, shell) {
+    state.shellSelections[libId] = shell === "powershell" ? "powershell" : "bash";
   }
 
   function makeLibTitle(lib) {
@@ -264,16 +269,13 @@
 
   function loadSettings(baseDirDefault) {
     const storedBaseDir = localStorage.getItem(STORAGE_KEYS.baseDir);
-    const storedPlatform = localStorage.getItem(STORAGE_KEYS.platform);
     const storedTheme = localStorage.getItem(STORAGE_KEYS.theme);
 
     state.baseDirDefault = baseDirDefault;
     state.settings.baseDir = normalizeBaseDir(storedBaseDir, baseDirDefault);
-    state.settings.platform = storedPlatform === "powershell" ? "powershell" : "posix";
     state.settings.theme = storedTheme === "light" || storedTheme === "dark" ? storedTheme : "system";
 
     selectors.baseDirInput.value = state.settings.baseDir;
-    selectors.platformSelect.value = state.settings.platform;
     selectors.themeSelect.value = state.settings.theme;
     updateOverrideIndicators();
     applyTheme(state.settings.theme);
@@ -298,11 +300,6 @@
     const baseOverride = state.settings.baseDir !== normalizeBaseDir(state.baseDirDefault, "external");
     if (selectors.baseDirOverride) {
       selectors.baseDirOverride.classList.toggle("visible", baseOverride);
-    }
-
-    const platformOverride = state.settings.platform !== "posix";
-    if (selectors.platformOverride) {
-      selectors.platformOverride.classList.toggle("visible", platformOverride);
     }
 
     const themeOverride = state.settings.theme !== "system";
@@ -467,11 +464,11 @@
     return button;
   }
 
-  function createCodeBlock(label, text, platform) {
+  function createCodeBlock(label, text, shell) {
     const wrapper = document.createElement("div");
     wrapper.className = "code-block";
-    if (platform) {
-      wrapper.dataset.platform = platform;
+    if (shell) {
+      wrapper.dataset.shell = shell;
     }
 
     const header = document.createElement("div");
@@ -530,6 +527,61 @@
     return section;
   }
 
+  function applyShellVisibility(section, shell) {
+    section.querySelectorAll(".command-set").forEach((node) => {
+      const shouldShow = (node.dataset.shell || "") === shell;
+      node.classList.toggle("inactive", !shouldShow);
+    });
+    section.querySelectorAll(".code-block").forEach((node) => {
+      const nodeShell = node.dataset.shell;
+      if (nodeShell) {
+        node.classList.toggle("inactive", nodeShell !== shell);
+      }
+    });
+  }
+
+  function createShellToggle(libId, shell, onChange) {
+    const wrapper = document.createElement("div");
+    wrapper.className = "shell-toggle";
+
+    const label = document.createElement("span");
+    label.className = "shell-label";
+    label.textContent = "Shell";
+    wrapper.appendChild(label);
+
+    const tabs = document.createElement("div");
+    tabs.className = "shell-tabs";
+    const shells = [
+      { value: "bash", title: "Bash" },
+      { value: "powershell", title: "PowerShell" },
+    ];
+
+    shells.forEach((item) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "shell-tab";
+      button.textContent = item.title;
+      button.dataset.shell = item.value;
+      if (item.value === shell) {
+        button.classList.add("active");
+      }
+      button.addEventListener("click", () => {
+        const chosen = button.dataset.shell || "bash";
+        setShellForLibrary(libId, chosen);
+        tabs.querySelectorAll(".shell-tab").forEach((tab) => {
+          tab.classList.toggle("active", tab === button);
+        });
+        if (onChange) {
+          onChange(chosen);
+        }
+      });
+      tabs.appendChild(button);
+    });
+
+    wrapper.appendChild(tabs);
+    return wrapper;
+  }
+
   function createToggle(label, contentEl, expanded) {
     const wrapper = document.createElement("div");
     wrapper.className = "toggle";
@@ -565,6 +617,7 @@
 
     state.filtered.forEach((lib) => {
       const renderData = computeRenderData(lib);
+      const shell = getShellForLibrary(lib.id);
       const titleParts = makeLibTitle(lib);
       const section = document.createElement("section");
       section.className = "library";
@@ -615,6 +668,9 @@
       license.appendChild(licenseLink);
 
       const documentation = createDocumentationSection(lib.documentation);
+      const shellToggle = createShellToggle(lib.id, shell, (newShell) => {
+        applyShellVisibility(section, newShell);
+      });
 
       const commandsSection = document.createElement("div");
       commandsSection.className = "commands";
@@ -624,13 +680,13 @@
 
       const posixCommands = document.createElement("div");
       posixCommands.className = "command-set";
-      posixCommands.dataset.platform = "posix";
-      posixCommands.appendChild(createCodeBlock("POSIX wget", renderData.commands.wgetPosix, "posix"));
-      posixCommands.appendChild(createCodeBlock("POSIX curl", renderData.commands.curlPosix, "posix"));
+      posixCommands.dataset.shell = "bash";
+      posixCommands.appendChild(createCodeBlock("Bash wget", renderData.commands.wgetPosix, "bash"));
+      posixCommands.appendChild(createCodeBlock("Bash curl", renderData.commands.curlPosix, "bash"));
 
       const winCommands = document.createElement("div");
       winCommands.className = "command-set";
-      winCommands.dataset.platform = "powershell";
+      winCommands.dataset.shell = "powershell";
       winCommands.appendChild(createCodeBlock("PowerShell curl alias", renderData.commands.curlPwsh, "powershell"));
       winCommands.appendChild(createCodeBlock("PowerShell wget alias", renderData.commands.wgetPwsh, "powershell"));
       winCommands.appendChild(createCodeBlock("Invoke-WebRequest", renderData.commands.iwrPwsh, "powershell"));
@@ -640,13 +696,13 @@
 
       const compileContent = document.createElement("div");
       compileContent.className = "compile-section";
-      compileContent.appendChild(createCodeBlock("POSIX compile", renderData.commands.compilePosix, "posix"));
+      compileContent.appendChild(createCodeBlock("Bash compile", renderData.commands.compilePosix, "bash"));
       compileContent.appendChild(createCodeBlock("Windows compile", renderData.commands.compileWin, "powershell"));
       const compileToggle = createToggle("build commands", compileContent, false);
 
       const scriptsContent = document.createElement("div");
       scriptsContent.className = "scripts";
-      scriptsContent.appendChild(createCodeBlock("POSIX install script", renderData.scripts.posix, "posix"));
+      scriptsContent.appendChild(createCodeBlock("Bash install script", renderData.scripts.posix, "bash"));
       scriptsContent.appendChild(createCodeBlock("PowerShell install script", renderData.scripts.powershell, "powershell"));
       const scriptToggle = createToggle("install scripts", scriptsContent, false);
 
@@ -680,6 +736,7 @@
       if (documentation) {
         section.appendChild(documentation);
       }
+      section.appendChild(shellToggle);
       section.appendChild(commandsSection);
       section.appendChild(compileToggle);
       section.appendChild(scriptToggle);
@@ -689,10 +746,10 @@
       }
 
       fragment.appendChild(section);
+      applyShellVisibility(section, shell);
     });
 
     selectors.libraryContainer.appendChild(fragment);
-    updatePlatformVisibility();
     attachCopyHandlers();
   }
 
@@ -709,19 +766,6 @@
       fragment.appendChild(li);
     });
     selectors.tocList.appendChild(fragment);
-  }
-
-  function updatePlatformVisibility() {
-    const activePlatform = state.settings.platform;
-    document.querySelectorAll(".command-set").forEach((node) => {
-      node.classList.toggle("inactive", node.dataset.platform !== activePlatform);
-    });
-    document.querySelectorAll(".code-block").forEach((node) => {
-      const platform = node.dataset.platform;
-      if (platform) {
-        node.classList.toggle("inactive", platform !== activePlatform);
-      }
-    });
   }
 
   function attachCopyHandlers() {
@@ -758,10 +802,9 @@
 
   function resetSettings() {
     state.settings.baseDir = normalizeBaseDir(state.baseDirDefault, "external");
-    state.settings.platform = "posix";
     state.settings.theme = "system";
+    state.shellSelections = {};
     selectors.baseDirInput.value = state.settings.baseDir;
-    selectors.platformSelect.value = state.settings.platform;
     selectors.themeSelect.value = state.settings.theme;
     Object.values(STORAGE_KEYS).forEach((key) => localStorage.removeItem(key));
     updateOverrideIndicators();
@@ -774,7 +817,6 @@
   function renderAll() {
     renderLibraries();
     renderToc();
-    updatePlatformVisibility();
     if (state.hashTarget) {
       const target = document.getElementById(state.hashTarget);
       if (target) {
@@ -802,14 +844,6 @@
       applyFilters();
       safeRenderAll();
       log("baseDir changed", state.settings.baseDir);
-    });
-
-    selectors.platformSelect.addEventListener("change", (event) => {
-      state.settings.platform = event.target.value === "powershell" ? "powershell" : "posix";
-      saveSetting(STORAGE_KEYS.platform, state.settings.platform);
-      updatePlatformVisibility();
-      updateOverrideIndicators();
-      log("platform changed", state.settings.platform);
     });
 
     selectors.themeSelect.addEventListener("change", (event) => {
