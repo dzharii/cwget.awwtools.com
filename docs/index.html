@@ -1304,6 +1304,243 @@ int main(void) {
       </link>
     </documentation>
   </library>
+  <library id="tiny_regex_c" fsName="tiny_regex_c">
+    <files>
+      <file path="re.h" url="https://raw.githubusercontent.com/kokke/tiny-regex-c/master/re.h" />
+      <file path="re.c" url="https://raw.githubusercontent.com/kokke/tiny-regex-c/master/re.c" />
+    </files>
+    <suffixDir>kokke</suffixDir>
+    <version>0.0.0</version>
+    <title>re.h</title>
+    <description>Small portable regular expression engine in C with a fixed-size compiled pattern and simple match API.</description>
+    <categories>text, regex, parsing</categories>
+    <sampleCode><![CDATA[
+#include <stdio.h>
+#include "re.h"
+
+int main(void) {
+    const char *text = "ahem.. 'hello world !' ..";
+    int match_len = 0;
+
+    re_t pattern = re_compile("[Hh]ello [Ww]orld\\s*[!]?");
+    int idx = re_matchp(pattern, text, &match_len);
+
+    if (idx != -1) {
+        printf("match at %d, length %d\n", idx, match_len);
+        printf("match: %.*s\n", match_len, text + idx);
+    } else {
+        printf("no match\n");
+    }
+
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>Unlicense (public domain)</licenseSummary>
+    <licenseUrl>https://github.com/kokke/tiny-regex-c/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>sv</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/kokke/tiny-regex-c</url>
+        <urlDescription>Source code (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/kokke/tiny-regex-c#readme</url>
+        <urlDescription>Project README</urlDescription>
+      </link>
+    </documentation>
+  </library>
+
+  <library id="tiny_hmac_c" fsName="tiny_hmac_c">
+    <files>
+      <file path="src/hmac.h" url="https://raw.githubusercontent.com/kokke/tiny-HMAC-c/main/src/hmac.h" />
+      <file path="src/hmac.c" url="https://raw.githubusercontent.com/kokke/tiny-HMAC-c/main/src/hmac.c" />
+    </files>
+    <suffixDir>kokke</suffixDir>
+    <version>0.0.0</version>
+    <title>hmac.h</title>
+    <description>Small portable HMAC-SHA1 implementation in C for computing message authentication codes over byte buffers.</description>
+    <categories>crypto, hmac, security</categories>
+    <sampleCode><![CDATA[
+#include <stdio.h>
+#include <stdint.h>
+#include <stddef.h>
+
+#include "hmac.h"
+
+int main(void) {
+    const uint8_t key[] = "secret";
+    const uint8_t msg[] = "hello world";
+    uint8_t digest[HMAC_SHA1_DIGEST_SIZE] = {0};
+
+    hmac_sha1(key, (uint32_t)(sizeof key - 1),
+              msg,  (uint32_t)(sizeof msg - 1),
+              digest);
+
+    for (size_t i = 0; i < HMAC_SHA1_DIGEST_SIZE; ++i) {
+        printf("%02x", digest[i]);
+    }
+    printf("\n");
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>Unlicense (public domain)</licenseSummary>
+    <licenseUrl>https://github.com/kokke/tiny-HMAC-c/blob/main/LICENSE</licenseUrl>
+    <worksWellWith>tiny_bignum_c</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/kokke/tiny-HMAC-c</url>
+        <urlDescription>Source code (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/kokke/tiny-HMAC-c#readme</url>
+        <urlDescription>Project README</urlDescription>
+      </link>
+    </documentation>
+  </library>
+
+    <library id="tiny_lint_c" fsName="tiny_lint_c">
+    <files>
+      <file path="src/check_return_count_in_functions.c" url="https://raw.githubusercontent.com/kokke/tiny-lint-c/master/src/check_return_count_in_functions.c" />
+    </files>
+    <suffixDir>kokke</suffixDir>
+    <version>0.0.0</version>
+    <title>tiny-lint-c</title>
+    <description>Small C99 static analysis tool for C code, implementing a handful of lexical checks for common pitfalls in function prototypes, naming, control-flow, and returns.</description>
+    <categories>static analysis, lint, tooling</categories>
+    <sampleCode><![CDATA[
+/*
+ * tiny-lint-c is a standalone command-line tool, not a header-only library.
+ * Build and run it according to the instructions in the project README.
+ */
+
+int main(void) {
+    /* Run the built tiny-lint-c binary on your C sources from the shell. */
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>Unlicense (public domain)</licenseSummary>
+    <licenseUrl>https://github.com/kokke/tiny-lint-c/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>sv</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/kokke/tiny-lint-c</url>
+        <urlDescription>Source code (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/kokke/tiny-lint-c#readme</url>
+        <urlDescription>Project README</urlDescription>
+      </link>
+    </documentation>
+  </library>
+
+  <library id="tiny_fixedpoint_c" fsName="tiny_fixedpoint_c">
+    <files>
+      <file path="src/fixedpoint.h" url="https://raw.githubusercontent.com/kokke/tiny-fixedpoint-c/main/src/fixedpoint.h" />
+      <file path="src/fixedpoint.c" url="https://raw.githubusercontent.com/kokke/tiny-fixedpoint-c/main/src/fixedpoint.c" />
+    </files>
+    <suffixDir>kokke</suffixDir>
+    <version>0.0.0</version>
+    <title>fixedpoint.h</title>
+    <description>Small fixed-point arithmetic library in C99 for decimal calculations using statically scaled 64-bit integers.</description>
+    <categories>math, fixed-point, numeric</categories>
+    <sampleCode><![CDATA[
+#include <stdio.h>
+#include <stdint.h>
+
+#include "fixedpoint.h"
+
+int main(void) {
+    fp_t a = fp(3,1415);   /* approx pi */
+    fp_t b = fp(2,0000);
+
+    fp_t sum  = fp_add(a, b);
+    fp_t prod = fp_mul(a, b);
+
+    printf("a      = %s\n", fp_to_string(a));
+    printf("b      = %s\n", fp_to_string(b));
+    printf("a + b  = %s\n", fp_to_string(sum));
+    printf("a * b  = %s\n", fp_to_string(prod));
+
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>Unlicense (public domain)</licenseSummary>
+    <licenseUrl>https://github.com/kokke/tiny-fixedpoint-c/blob/main/LICENSE</licenseUrl>
+    <worksWellWith>tiny_bignum_c</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/kokke/tiny-fixedpoint-c</url>
+        <urlDescription>Source code (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/kokke/tiny-fixedpoint-c#readme</url>
+        <urlDescription>Project README</urlDescription>
+      </link>
+    </documentation>
+  </library>
+
+  <library id="tiny_aes_c" fsName="tiny_aes_c">
+    <files>
+      <file path="aes.h" url="https://raw.githubusercontent.com/kokke/tiny-AES-c/master/aes.h" />
+      <file path="aes.c" url="https://raw.githubusercontent.com/kokke/tiny-AES-c/master/aes.c" />
+    </files>
+    <suffixDir>kokke</suffixDir>
+    <version>1.0.0</version>
+    <title>aes.h</title>
+    <description>Small portable AES-128/192/256 implementation in C with ECB, CBC and CTR modes for encrypting byte buffers.</description>
+    <categories>crypto, aes, security</categories>
+    <sampleCode><![CDATA[
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+
+#include "aes.h"
+
+int main(void) {
+    /* 128-bit key and single 16-byte block */
+    uint8_t key[16] = {
+        0x2b, 0x7e, 0x15, 0x16,
+        0x28, 0xae, 0xd2, 0xa6,
+        0xab, 0xf7, 0x15, 0x88,
+        0x09, 0xcf, 0x4f, 0x3c
+    };
+
+    uint8_t block[16] = {
+        0x6b, 0xc1, 0xbe, 0xe2,
+        0x2e, 0x40, 0x9f, 0x96,
+        0xe9, 0x3d, 0x7e, 0x11,
+        0x73, 0x93, 0x17, 0x2a
+    };
+
+    struct AES_ctx ctx;
+    AES_init_ctx(&ctx, key);
+
+    AES_ECB_encrypt(&ctx, block);
+
+    printf("AES ECB encrypted block:\n");
+    for (size_t i = 0; i < sizeof block; ++i) {
+        printf("%02x", block[i]);
+    }
+    printf("\n");
+
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>Unlicense (public domain)</licenseSummary>
+    <licenseUrl>https://github.com/kokke/tiny-AES-c/blob/master/unlicense.txt</licenseUrl>
+    <worksWellWith>tiny_hmac_c</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/kokke/tiny-AES-c</url>
+        <urlDescription>Source code (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/kokke/tiny-AES-c#readme</url>
+        <urlDescription>Project README</urlDescription>
+      </link>
+    </documentation>
+  </library>
+
 </libraries>
     </script>
   </section>
