@@ -31,6 +31,7 @@
     hashTarget: decodeURIComponent(window.location.hash || "").replace("#", ""),
     libraryLookup: {},
     shellSelections: {},
+    bookmarks: {},
   };
 
   let toastEl = null;
@@ -127,6 +128,37 @@
 
   function setShellForLibrary(libId, shell) {
     state.shellSelections[libId] = shell === "powershell" ? "powershell" : "bash";
+  }
+
+  function bookmarkKey(lib) {
+    return `bookmarked_${lib.suffixDir}/${lib.id}`;
+  }
+
+  function isBookmarked(lib) {
+    return !!state.bookmarks[bookmarkKey(lib)];
+  }
+
+  function setBookmark(lib, value) {
+    const key = bookmarkKey(lib);
+    state.bookmarks[key] = !!value;
+    try {
+      localStorage.setItem(key, value ? "true" : "false");
+    } catch (error) {
+      logError("localStorage.setItem failed (bookmark)", error);
+    }
+  }
+
+  function loadBookmarks(libraries) {
+    libraries.forEach((lib) => {
+      const key = bookmarkKey(lib);
+      try {
+        const stored = localStorage.getItem(key);
+        state.bookmarks[key] = stored === "true";
+      } catch (error) {
+        logError("localStorage.getItem failed (bookmark)", error);
+        state.bookmarks[key] = false;
+      }
+    });
   }
 
   function makeLibTitle(lib) {
@@ -582,6 +614,31 @@
     return wrapper;
   }
 
+  function createBookmarkControl(lib) {
+    const container = document.createElement("div");
+    container.className = "bookmark-row";
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "bookmark-button";
+
+    const applyState = (liked) => {
+      button.classList.toggle("liked", liked);
+      button.textContent = liked ? "🧡 Liked" : "🩶";
+    };
+
+    applyState(isBookmarked(lib));
+
+    button.addEventListener("click", () => {
+      const next = !isBookmarked(lib);
+      setBookmark(lib, next);
+      applyState(next);
+      renderToc();
+    });
+
+    container.appendChild(button);
+    return container;
+  }
+
   function createToggle(label, contentEl, expanded) {
     const wrapper = document.createElement("div");
     wrapper.className = "toggle";
@@ -671,6 +728,7 @@
       const shellToggle = createShellToggle(lib.id, shell, (newShell) => {
         applyShellVisibility(section, newShell);
       });
+      const bookmarkControl = createBookmarkControl(lib);
 
       const commandsSection = document.createElement("div");
       commandsSection.className = "commands";
@@ -744,6 +802,7 @@
       if (related.childElementCount > 0) {
         section.appendChild(related);
       }
+      section.appendChild(bookmarkControl);
 
       fragment.appendChild(section);
       applyShellVisibility(section, shell);
@@ -762,6 +821,13 @@
       link.href = `#${lib.id}`;
       const titleParts = makeLibTitle(lib);
       link.textContent = titleParts.pathLabel;
+      if (isBookmarked(lib)) {
+        const heart = document.createElement("span");
+        heart.className = "toc-heart";
+        heart.textContent = "🧡";
+        link.appendChild(document.createTextNode(" "));
+        link.appendChild(heart);
+      }
       li.appendChild(link);
       fragment.appendChild(li);
     });
@@ -883,6 +949,7 @@
       state.baseDirDefault = parsed.baseDir;
       state.libraries = parsed.libraries;
       state.libraryLookup = Object.fromEntries(parsed.libraries.map((lib) => [lib.id, lib]));
+      loadBookmarks(parsed.libraries);
       loadSettings(parsed.baseDir);
       bindEvents();
       applyFilters();

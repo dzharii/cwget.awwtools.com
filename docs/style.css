@@ -368,12 +368,12 @@ a:hover {
 }
 
 .shell-tab {
-  background: transparent;
-  color: var(--text);
-  border: none;
+  background: transparent !important;
+  color: var(--text) !important;
+  border: none !important;
   border-radius: 8px;
   padding: 0.35rem 0.75rem;
-  box-shadow: none;
+  box-shadow: none !important;
   font-weight: 700;
 }
 
@@ -382,9 +382,42 @@ a:hover {
 }
 
 .shell-tab.active {
-  background: var(--card);
-  border: 1px solid var(--accent);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  background: var(--card) !important;
+  border: 1px solid var(--accent) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+.bookmark-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.75rem;
+}
+
+.bookmark-button {
+  background: var(--card) !important;
+  color: var(--muted) !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: none !important;
+  padding: 0.35rem 0.7rem;
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+.bookmark-button:hover {
+  border-color: var(--accent);
+  color: var(--accent-strong) !important;
+}
+
+.bookmark-button.liked {
+  color: #ff8c42 !important;
+  border-color: #ff8c42 !important;
+  background: rgba(255, 140, 66, 0.08) !important;
+}
+
+.toc-heart {
+  color: #ff8c42;
+  margin-left: 0.35rem;
+  font-size: 0.95em;
 }
 
 .tag-row {
