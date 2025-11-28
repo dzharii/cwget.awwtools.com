@@ -18,8 +18,8 @@
           <h1>cwget: wget package manager for C</h1>
           <p class="lede">
             Download single-file C libraries with ready-made commands, install scripts, and tiny sample
-                        programs. Configure the base directory and theme to match your project, then copy commands with
-                        one click.
+            programs. Configure the base directory and theme to match your project, then copy commands with
+            one click.
           </p>
         </div>
       </div>
@@ -37,9 +37,9 @@
           <span class="override-indicator" id="baseDirOverride">Using saved value</span>
         </div>
       </div>
-            <div class="setting">
-                <label for="themeSelect">Theme</label>
-                <div class="input-with-note theme-note">
+      <div class="setting">
+        <label for="themeSelect">Theme</label>
+        <div class="input-with-note theme-note">
           <div class="select-row">
             <select id="themeSelect">
               <option value="system">System</option>
@@ -1264,7 +1264,9 @@ int main(void) {
     <categories>math, big integers, arbitrary-precision</categories>
     <sampleCode><![CDATA[
 #include <stdio.h>
+#include <string.h>
 #include "bn.h"
+
 
 int main(void) {
     struct bn a, b, c;
@@ -1273,11 +1275,19 @@ int main(void) {
     bignum_init(&b);
     bignum_init(&c);
 
-    bignum_from_int(&a, 123);
-    bignum_from_int(&b, 456);
-    bignum_add(&a, &b, &c);
 
-    printf("123 + 456 = %d\n", bignum_to_int(&c));
+    char stra[] = "ffffffffffffffffffffffffffffffffffffffffffffffff";
+    char strb[] = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+
+    bignum_from_string(&a, stra, strlen(stra));
+    bignum_from_string(&b, strb, strlen(strb));
+
+    bignum_mul(&a, &b, &c);
+
+    char buff[1000] = {0};
+    printf("sizeof(buff) = %zu\n", sizeof(buff));
+    bignum_to_string(&c, buff, sizeof(buff));
+    printf("A * B = '%s'\n", buff);
     return 0;
 }
     ]]></sampleCode>
