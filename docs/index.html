@@ -1600,6 +1600,49 @@ int main(void) {
     </documentation>
   </library>
 
+  <library id="rlutil" fsName="rlutil">
+    <files>
+      <file path="rlutil.h" url="https://raw.githubusercontent.com/tapio/rlutil/master/rlutil.h" />
+    </files>
+    <suffixDir>tapio</suffixDir>
+    <version>0.0.0</version>
+    <title>rlutil.h</title>
+    <description>Header-only console utility collection for cross-platform C and C++ programs: colored text, cursor positioning and keyboard input.</description>
+    <categories>console, terminal, ui</categories>
+    <sampleCode><![CDATA[
+#include <stdio.h>
+#include "rlutil.h"
+
+int main(void) {
+    setColor(RED);
+    locate(1, 1);
+    printf("Hello from rlutil\n");
+    resetColor();
+
+    printf("Press any key to exit...\n");
+    getch();
+    cls();
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>WTFPL 2.0 license</licenseSummary>
+    <licenseUrl>https://github.com/tapio/rlutil/blob/master/docs/License.txt</licenseUrl>
+    <worksWellWith>sv</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/tapio/rlutil</url>
+        <urlDescription>Source code (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://tapiov.net/rlutil/docs/HTML/index.html</url>
+        <urlDescription>API reference</urlDescription>
+      </link>
+      <link>
+        <url>https://tapio.github.io/rlutil/</url>
+        <urlDescription>Project homepage</urlDescription>
+      </link>
+    </documentation>
+  </library>
 
 </libraries>
     </script>
