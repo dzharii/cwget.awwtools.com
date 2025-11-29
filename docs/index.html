@@ -1541,6 +1541,66 @@ int main(void) {
     </documentation>
   </library>
 
+  <library id="bigint" fsName="bigint">
+    <files>
+      <file path="bigint.h" url="https://raw.githubusercontent.com/983/bigint/master/bigint.h" />
+      <file path="bigint.c" url="https://raw.githubusercontent.com/983/bigint/master/bigint.c" />
+      <file path="bigint.hpp" url="https://raw.githubusercontent.com/983/bigint/master/bigint.hpp" />
+    </files>
+    <suffixDir>983</suffixDir>
+    <version>0.0.0</version>
+    <title>bigint.h</title>
+    <description>Arbitrary precision integer library for C and C++; provides C API and C++ wrapper, discontinued in favor of 983/Num (CPP only).</description>
+    <categories>math, big integers, arbitrary-precision</categories>
+    <sampleCode><![CDATA[
+#include <stdio.h>
+#include "bigint.h"
+
+int main(void) {
+    char buf[1024];
+
+    bigint x[1];
+    bigint y[1];
+    bigint result[1];
+
+    bigint_init(x);
+    bigint_init(y);
+    bigint_init(result);
+
+    bigint_from_str(x, "123456789");
+    bigint_from_str(y, "987654321");
+
+    bigint_mul(result, x, y);
+
+    puts(bigint_write(buf, sizeof buf, result));
+
+    bigint_free(x);
+    bigint_free(y);
+    bigint_free(result);
+
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>Unlicense (public domain)</licenseSummary>
+    <licenseUrl>https://github.com/983/bigint/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>tiny_bignum_c, tiny_fixedpoint_c</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/983/bigint</url>
+        <urlDescription>Source code (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/983/bigint#readme</url>
+        <urlDescription>Project README</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/983/Num</url>
+        <urlDescription>Successor project (Num)</urlDescription>
+      </link>
+    </documentation>
+  </library>
+
+
 </libraries>
     </script>
   </section>
