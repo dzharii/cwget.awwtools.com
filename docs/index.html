@@ -1644,6 +1644,56 @@ int main(void) {
     </documentation>
   </library>
 
+  <library id="linenoise" fsName="linenoise">
+    <files>
+      <file path="linenoise.h" url="https://raw.githubusercontent.com/antirez/linenoise/master/linenoise.h" />
+      <file path="linenoise.c" url="https://raw.githubusercontent.com/antirez/linenoise/master/linenoise.c" />
+    </files>
+    <suffixDir>antirez</suffixDir>
+    <version>0.0.0</version>
+    <title>linenoise.h</title>
+    <description>Minimal BSD-licensed readline replacement for interactive command-line input with history, completion and hints.</description>
+    <categories>console, line-editing, terminal</categories>
+    <sampleCode><![CDATA[
+#include <stdio.h>
+#include "linenoise.h"
+
+int main(void) {
+    linenoiseHistorySetMaxLen(100);
+
+    for (;;) {
+        char *line = linenoise("prompt> ");
+        if (line == NULL) {
+            break;
+        }
+
+        if (line[0] != '\0') {
+            linenoiseHistoryAdd(line);
+        }
+
+        printf("you typed: %s\n", line);
+        linenoiseFree(line);
+    }
+
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>BSD-2-Clause license</licenseSummary>
+    <licenseUrl>https://github.com/antirez/linenoise/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>rlutil</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/antirez/linenoise</url>
+        <urlDescription>Source code (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/antirez/linenoise/blob/master/README.markdown</url>
+        <urlDescription>Project README</urlDescription>
+      </link>
+    </documentation>
+  </library>
+
+
 </libraries>
     </script>
   </section>
