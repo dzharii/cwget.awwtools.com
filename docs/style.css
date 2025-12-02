@@ -118,6 +118,7 @@ a:hover {
 .project-link {
   align-self: center;
   text-decoration: none;
+  margin: auto;
   padding: 0.55rem 0.85rem;
   border-radius: 10px;
   border: 1px solid var(--border);
