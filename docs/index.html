@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="cwget-help.css">
 </head>
 
 <body class="theme-system" background="#002b36">
@@ -76,6 +77,33 @@
   </header>
 
   <main>
+    <section class="cli-help">
+      <details class="cli-help-details" id="cliHelpDetails">
+        <summary><code>./cwget.sh help</code></summary>
+        <div class="cli-help-body">
+          <p>
+            cwget is a tiny Bash client that pulls the cwget catalog, caches it for fast lookups, and installs
+            single-file C libraries into your preferred base directory.
+          </p>
+          <p>
+            Use it to search by tag or keyword, inspect package metadata, and download files with wget or curl
+            without a registry or build step.
+          </p>
+          <div class="terminal-sim" data-command="./cwget.sh help" aria-hidden="false">
+            <div class="terminal-header">
+              <div class="terminal-dots" aria-hidden="true">
+                <span class="terminal-dot red"></span>
+                <span class="terminal-dot yellow"></span>
+                <span class="terminal-dot green"></span>
+              </div>
+              <div class="terminal-title">cwget help demo</div>
+            </div>
+            <pre class="terminal-content" role="img" aria-label="Animated terminal output showing cwget help"></pre>
+          </div>
+        </div>
+      </details>
+    </section>
+
     <section class="filters">
       <div class="search-block">
         <label for="searchInput">Search 🔍</label>
@@ -1808,6 +1836,7 @@ int WinMain(HINSTANCE instance, HINSTANCE prev, LPSTR cmdLine, int show) {
   </section>
 
   <script src="main.js"></script>
+  <script src="cwget-help.js"></script>
 </body>
 
 </html>
