@@ -1,4 +1,16 @@
 #!/usr/bin/env bash
+#
+# Tests run:
+# 
+#  bash -n cwget.sh
+#  ./cwget.sh help
+#  ./cwget.sh update --refresh
+#  ./cwget.sh search rgfw
+#  ./cwget.sh info rgfw
+#  ./cwget.sh path rgfw
+#  ./cwget.sh install rgfw --dry-run --dir ./external-test
+#  ./cwget.sh --offline search rgfw
+# 
 
 SCRIPT_NAME="$(basename "$0")"
 DEFAULT_SOURCE_URL="https://cwget.awwtools.com/"
