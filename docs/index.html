@@ -1759,6 +1759,48 @@ int main(void) {
       </link>
     </documentation>
   </library>
+  <library id="luigi" fsName="luigi">
+    <files>
+      <file path="luigi.h" url="https://raw.githubusercontent.com/nakst/luigi/main/luigi.h" />
+    </files>
+    <suffixDir>nakst</suffixDir>
+    <version>0.0.0</version>
+    <title>luigi.h</title>
+    <description>Barebones single-header GUI toolkit for Win32 and X11 with basic widgets, layout and message-based event handling.</description>
+    <categories>gui, windowing, widgets</categories>
+    <sampleCode><![CDATA[
+#define UI_WINDOWS
+#define UI_IMPLEMENTATION
+#include "luigi.h"
+
+int WinMain(HINSTANCE instance, HINSTANCE prev, LPSTR cmdLine, int show) {
+    UIInitialise();
+
+    UIWindow *window = UIWindowCreate(
+        0, 0,
+        "luigi example",
+        640, 480
+    );
+
+    return UIMessageLoop();
+}
+    ]]></sampleCode>
+    <licenseSummary>MIT license</licenseSummary>
+    <licenseUrl>https://github.com/nakst/luigi/blob/main/LICENSE</licenseUrl>
+    <worksWellWith>tinyfiledialogs, stb_image, stb_truetype</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/nakst/luigi</url>
+        <urlDescription>Source code (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/nakst/luigi#readme</url>
+        <urlDescription>Project README</urlDescription>
+      </link>
+    </documentation>
+  </library>
+
+
 
 
 </libraries>
