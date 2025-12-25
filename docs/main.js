@@ -365,12 +365,8 @@
     const wgetPosix = ["mkdir -p " + dirPosixQ, ...wgetPosixParts].join(" && ");
     const curlPosix = ["mkdir -p " + dirPosixQ, ...curlPosixParts].join(" && ");
 
-    const curlPwshParts = lib.files.map((_, index) => `curl ${winUrls[index]} -OutFile ${libWinQ[index]}`);
-    const wgetPwshParts = lib.files.map((_, index) => `wget ${winUrls[index]} -OutFile ${libWinQ[index]}`);
     const iwrPwshParts = lib.files.map((_, index) => `Invoke-WebRequest ${winUrls[index]} -OutFile ${libWinQ[index]}`);
     const mkdirPwsh = `New-Item -ItemType Directory -Path ${dirWinQ} -Force | Out-Null`;
-    const curlPwsh = [mkdirPwsh, ...curlPwshParts].join("; ");
-    const wgetPwsh = [mkdirPwsh, ...wgetPwshParts].join("; ");
     const iwrPwsh = [mkdirPwsh, ...iwrPwshParts].join("; ");
 
     const posixSourceArgs = lib.files
@@ -437,8 +433,6 @@
       commands: {
         wgetPosix,
         curlPosix,
-        curlPwsh,
-        wgetPwsh,
         iwrPwsh,
         compilePosix,
         compileWin,
@@ -745,8 +739,6 @@
       const winCommands = document.createElement("div");
       winCommands.className = "command-set";
       winCommands.dataset.shell = "powershell";
-      winCommands.appendChild(createCodeBlock("PowerShell curl alias", renderData.commands.curlPwsh, "powershell"));
-      winCommands.appendChild(createCodeBlock("PowerShell wget alias", renderData.commands.wgetPwsh, "powershell"));
       winCommands.appendChild(createCodeBlock("Invoke-WebRequest", renderData.commands.iwrPwsh, "powershell"));
 
       commandsSection.appendChild(posixCommands);
