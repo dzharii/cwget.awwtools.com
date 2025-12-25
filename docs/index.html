@@ -1707,6 +1707,58 @@ int main(void) {
       </link>
     </documentation>
   </library>
+  <library id="tinyfiledialogs" fsName="tinyfiledialogs">
+    <files>
+      <file path="tinyfiledialogs.c" url="https://sourceforge.net/p/tinyfiledialogs/code/ci/master/tree/tinyfiledialogs.c?format=raw" />
+      <file path="tinyfiledialogs.h" url="https://sourceforge.net/p/tinyfiledialogs/code/ci/master/tree/tinyfiledialogs.h?format=raw" />
+    </files>
+    <suffixDir>tinyfiledialogs</suffixDir>
+    <version>3.21.2</version>
+    <title>tinyfiledialogs.h</title>
+    <description>Cross-platform native file and message dialogs in a single C/C++ source and header, wrapping OS file pickers and message boxes.</description>
+    <categories>dialogs, ui, file selection</categories>
+    <sampleCode><![CDATA[
+#include <stdio.h>
+#include "tinyfiledialogs.h"
+
+int main(void) {
+    const char *filters[] = { "*.c", "*.h", "*.txt", NULL };
+    const char *selected = tinyfd_openFileDialog(
+        "Select a file",
+        "",
+        3,
+        filters,
+        "Source files",
+        0
+    );
+
+    if (selected) {
+        printf("Selected file: %s\n", selected);
+    } else {
+        printf("No file selected.\n");
+    }
+
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>Zlib license</licenseSummary>
+    <licenseUrl>https://sourceforge.net/projects/tinyfiledialogs/files/README.txt/download</licenseUrl>
+    <worksWellWith>rgfw, stb_image, olive_c</worksWellWith>
+    <documentation>
+      <link>
+        <url>http://tinyfiledialogs.sourceforge.net</url>
+        <urlDescription>Project homepage</urlDescription>
+      </link>
+      <link>
+        <url>https://sourceforge.net/projects/tinyfiledialogs/</url>
+        <urlDescription>Project page (SourceForge)</urlDescription>
+      </link>
+      <link>
+        <url>https://sourceforge.net/projects/tinyfiledialogs/files/README.txt/download</url>
+        <urlDescription>README and usage notes</urlDescription>
+      </link>
+    </documentation>
+  </library>
 
 
 </libraries>
