@@ -79,11 +79,30 @@
   <main>
     <section class="cli-help">
       <details class="cli-help-details" id="cliHelpDetails">
-        <summary><code>./cwget.sh help</code></summary>
+        <summary>
+          <code>./cwget.sh help</code>
+        </summary>
         <div class="cli-help-body">
           <p>
             cwget is a tiny Bash client that pulls the cwget catalog, caches it for fast lookups, and installs
             single-file C libraries into your preferred base directory.
+          </p>
+
+          <p>
+            It is a command-line wrapper around curl and/or wget that helps you automatically decide which one to use.
+            You almost don't even need to think about it: decision automated! Of course, it is optional. Download it at
+            <a href="https://raw.githubusercontent.com/dzharii/cwget.awwtools.com/refs/heads/main/cwget.sh">cwget.sh</a>
+            or use
+          <ul>
+            <li>
+              <code>curl -fsSL https://raw.githubusercontent.com/dzharii/cwget.awwtools.com/refs/heads/main/cwget.sh -o cwget.sh</code>
+            </li>
+
+            <li>
+              <code>wget https://raw.githubusercontent.com/dzharii/cwget.awwtools.com/refs/heads/main/cwget.sh -O cwget.sh</code>
+            </li>
+          </ul>
+
           </p>
           <p>
             Use it to search by tag or keyword, inspect package metadata, and download files with wget or curl
