@@ -124,10 +124,10 @@
                             // 0: not formatted
                             '',
                             // 1: keywords
-                            //
+                            'text-decoration:underline silver;',
                             //
                             // 2: punctuation
-                            opacity + 6,
+                            opacity + 5,
                             // 3: strings and regexps
                             opacity + 7,
                             // 4: comments
