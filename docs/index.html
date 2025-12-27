@@ -2227,6 +2227,376 @@ int main(void) {
       </link>
     </documentation>
   </library>
+  <library id="sokol_gfx" fsName="sokol_gfx">
+    <files>
+      <file path="sokol_gfx.h" url="https://raw.githubusercontent.com/floooh/sokol/master/sokol_gfx.h" />
+    </files>
+    <suffixDir>sokol</suffixDir>
+    <version>0.0.0</version>
+    <title>sokol_gfx.h</title>
+    <description>Cross-platform rendering abstraction for GL/GLES3/WebGL2, Metal, D3D11 and WebGPU; manages buffers, images, shaders, pipelines and render or compute passes from plain C.</description>
+    <categories>graphics, rendering, backend-abstraction</categories>
+    <sampleCode><![CDATA[
+#define SOKOL_IMPL
+#define SOKOL_DUMMY_BACKEND
+#include "sokol_gfx.h"
+#include <stdio.h>
+
+int main(void) {
+    sg_setup(&(sg_desc){0});
+    if (!sg_isvalid()) {
+        printf("sokol_gfx setup failed\n");
+        return 1;
+    }
+
+    printf("sokol_gfx dummy backend initialized\n");
+
+    /* normally you would record and submit passes here */
+
+    sg_shutdown();
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>zlib/libpng license</licenseSummary>
+    <licenseUrl>https://github.com/floooh/sokol/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>sokol_app, sokol_time, sokol_log, stb_image, stb_truetype, olive_c</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/floooh/sokol</url>
+        <urlDescription>Repository (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/floooh/sokol/blob/master/sokol_gfx.h</url>
+        <urlDescription>Header documentation (sokol_gfx.h)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/floooh/sokol-samples</url>
+        <urlDescription>Example programs using sokol_gfx</urlDescription>
+      </link>
+    </documentation>
+  </library>
+  <library id="sokol_app" fsName="sokol_app">
+    <files>
+      <file path="sokol_app.h" url="https://raw.githubusercontent.com/floooh/sokol/master/sokol_app.h" />
+    </files>
+    <suffixDir>sokol</suffixDir>
+    <version>0.0.0</version>
+    <title>sokol_app.h</title>
+    <description>Cross-platform app and window framework for desktop, mobile and web; provides main loop, events and graphics context creation for rendering backends.</description>
+    <categories>windowing, app-framework, input</categories>
+    <sampleCode><![CDATA[
+#define SOKOL_IMPL
+#include "sokol_app.h"
+#include <stdio.h>
+
+static void init(void) {
+    printf("sokol_app init\n");
+}
+
+static void frame(void) {
+    /* quit after ~60 frames */
+    if (sapp_frame_count() > 60) {
+        sapp_request_quit();
+    }
+}
+
+static void cleanup(void) {
+    printf("sokol_app cleanup\n");
+}
+
+sapp_desc sokol_main(int argc, char* argv[]) {
+    (void)argc; (void)argv;
+    return (sapp_desc){
+        .init_cb      = init,
+        .frame_cb     = frame,
+        .cleanup_cb   = cleanup,
+        .width        = 640,
+        .height       = 480,
+        .window_title = "sokol_app example",
+    };
+}
+    ]]></sampleCode>
+    <licenseSummary>zlib/libpng license</licenseSummary>
+    <licenseUrl>https://github.com/floooh/sokol/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>sokol_gfx, sokol_time, sokol_audio, sokol_args, sokol_log</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/floooh/sokol</url>
+        <urlDescription>Repository (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/floooh/sokol/blob/master/sokol_app.h</url>
+        <urlDescription>Header documentation (sokol_app.h)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/floooh/sokol-samples/tree/master/sapp</url>
+        <urlDescription>Example apps using sokol_app</urlDescription>
+      </link>
+    </documentation>
+  </library>
+
+  <library id="sokol_time" fsName="sokol_time">
+    <files>
+      <file path="sokol_time.h" url="https://raw.githubusercontent.com/floooh/sokol/master/sokol_time.h" />
+    </files>
+    <suffixDir>sokol</suffixDir>
+    <version>0.0.0</version>
+    <title>sokol_time.h</title>
+    <description>Cross-platform high-resolution timing helpers; wraps platform timers and converts ticks to seconds, milliseconds or microseconds.</description>
+    <categories>time, profiling, utility</categories>
+    <sampleCode><![CDATA[
+#define SOKOL_IMPL
+#include "sokol_time.h"
+#include <stdio.h>
+#include <stdint.h>
+
+int main(void) {
+    stm_setup();
+
+    uint64_t start = stm_now();
+    for (volatile int i = 0; i < 1000000; ++i) {
+        /* busy work */
+    }
+    uint64_t elapsed = stm_since(start);
+
+    printf("elapsed: %.3f ms\n", stm_ms(elapsed));
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>zlib/libpng license</licenseSummary>
+    <licenseUrl>https://github.com/floooh/sokol/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>sokol_app, sokol_gfx, sokol_audio</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/floooh/sokol</url>
+        <urlDescription>Repository (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/floooh/sokol/blob/master/sokol_time.h</url>
+        <urlDescription>Header documentation (sokol_time.h)</urlDescription>
+      </link>
+    </documentation>
+  </library>
+
+  <library id="sokol_audio" fsName="sokol_audio">
+    <files>
+      <file path="sokol_audio.h" url="https://raw.githubusercontent.com/floooh/sokol/master/sokol_audio.h" />
+    </files>
+    <suffixDir>sokol</suffixDir>
+    <version>0.0.0</version>
+    <title>sokol_audio.h</title>
+    <description>Minimal cross-platform audio output with a pull-style callback that continuously fills an interleaved float buffer.</description>
+    <categories>audio, playback, streaming</categories>
+    <sampleCode><![CDATA[
+#define SOKOL_IMPL
+#include "sokol_audio.h"
+#include <math.h>
+
+static void stream_cb(float* buffer, int num_frames, int num_channels) {
+    static float phase = 0.0f;
+    const float freq = 440.0f;
+    const float sample_rate = (float) saudio_sample_rate();
+    const float step = (2.0f * 3.14159265f * freq) / sample_rate;
+
+    const int samples = num_frames * num_channels;
+    for (int i = 0; i < samples; i += num_channels) {
+        float s = sinf(phase);
+        phase += step;
+        for (int c = 0; c < num_channels; ++c) {
+            buffer[i + c] = s;
+        }
+    }
+}
+
+int main(void) {
+    if (!saudio_setup(&(saudio_desc){
+        .stream_cb   = stream_cb,
+        .num_channels = 2,
+    })) {
+        return 1;
+    }
+
+    /* keep the process alive while audio is playing */
+    while (saudio_isvalid()) {
+        /* in a real app you would run your main loop here */
+    }
+
+    saudio_shutdown();
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>zlib/libpng license</licenseSummary>
+    <licenseUrl>https://github.com/floooh/sokol/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>sokol_app, sokol_time, sokol_log</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/floooh/sokol</url>
+        <urlDescription>Repository (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/floooh/sokol/blob/master/sokol_audio.h</url>
+        <urlDescription>Header documentation (sokol_audio.h)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/floooh/sokol-samples/tree/master/saudio</url>
+        <urlDescription>Example programs using sokol_audio</urlDescription>
+      </link>
+    </documentation>
+  </library>
+
+  <library id="sokol_fetch" fsName="sokol_fetch">
+    <files>
+      <file path="sokol_fetch.h" url="https://raw.githubusercontent.com/floooh/sokol/master/sokol_fetch.h" />
+    </files>
+    <suffixDir>sokol</suffixDir>
+    <version>0.0.0</version>
+    <title>sokol_fetch.h</title>
+    <description>Asynchronous streaming loader for files and HTTP requests with user callbacks, channels and lanes for controlled parallelism.</description>
+    <categories>io, async, streaming</categories>
+    <sampleCode><![CDATA[
+#define SOKOL_IMPL
+#include "sokol_fetch.h"
+#include "sokol_log.h"
+#include <stdio.h>
+
+static void fetch_cb(const sfetch_response_t* res) {
+    if (res->fetched) {
+        printf("fetched %d bytes from %s\n",
+               res->data.size,
+               sfetch_path(res));
+    }
+    if (res->finished) {
+        printf("request finished%s\n", res->failed ? " with error" : "");
+    }
+}
+
+int main(void) {
+    sfetch_setup(&(sfetch_desc_t){
+        .max_requests = 8,
+        .num_channels = 1,
+        .num_lanes    = 1,
+        .logger.func  = slog_func,
+    });
+
+    sfetch_send(&(sfetch_request_t){
+        .path     = "sokol_fetch.h",
+        .callback = fetch_cb,
+    });
+
+    while (sfetch_dowork() > 0) {
+        /* pump the worker and callbacks */
+    }
+
+    sfetch_shutdown();
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>zlib/libpng license</licenseSummary>
+    <licenseUrl>https://github.com/floooh/sokol/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>sokol_app, sokol_log, stb_image, sokol_gfx</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/floooh/sokol</url>
+        <urlDescription>Repository (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/floooh/sokol/blob/master/sokol_fetch.h</url>
+        <urlDescription>Header documentation (sokol_fetch.h)</urlDescription>
+      </link>
+    </documentation>
+  </library>
+
+  <library id="sokol_args" fsName="sokol_args">
+    <files>
+      <file path="sokol_args.h" url="https://raw.githubusercontent.com/floooh/sokol/master/sokol_args.h" />
+    </files>
+    <suffixDir>sokol</suffixDir>
+    <version>0.0.0</version>
+    <title>sokol_args.h</title>
+    <description>Unified key or value argument parser for native and WebAssembly apps; reads argc or argv on native and URL query strings on the web.</description>
+    <categories>arguments, cli, utility</categories>
+    <sampleCode><![CDATA[
+#define SOKOL_IMPL
+#include "sokol_args.h"
+#include <stdio.h>
+
+int main(int argc, char* argv[]) {
+    sargs_setup(&(sargs_desc){
+        .argc = argc,
+        .argv = argv,
+    });
+
+    for (int i = 0; i < sargs_num_args(); ++i) {
+        printf("key=%s value=%s\n",
+               sargs_key_at(i),
+               sargs_value_at(i));
+    }
+
+    if (sargs_boolean("debug")) {
+        printf("debug mode is on\n");
+    }
+
+    sargs_shutdown();
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>zlib/libpng license</licenseSummary>
+    <licenseUrl>https://github.com/floooh/sokol/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>sokol_app, sokol_log</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/floooh/sokol</url>
+        <urlDescription>Repository (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/floooh/sokol/blob/master/sokol_args.h</url>
+        <urlDescription>Header documentation (sokol_args.h)</urlDescription>
+      </link>
+    </documentation>
+  </library>
+
+  <library id="sokol_log" fsName="sokol_log">
+    <files>
+      <file path="sokol_log.h" url="https://raw.githubusercontent.com/floooh/sokol/master/sokol_log.h" />
+    </files>
+    <suffixDir>sokol</suffixDir>
+    <version>0.0.0</version>
+    <title>sokol_log.h</title>
+    <description>Shared logging utility for other sokol headers; provides a default stderr logger and types for plugging custom callbacks into sokol descriptors.</description>
+    <categories>logging, diagnostics, utility</categories>
+    <sampleCode><![CDATA[
+#define SOKOL_IMPL
+#include "sokol_log.h"
+#include <stdint.h>
+
+int main(void) {
+    /* use the built-in logger directly */
+    slog_func(
+        "demo",        /* tag */
+        2,             /* log level (warn) */
+        0,             /* item id */
+        "example log", /* message */
+        42,            /* line number */
+        "demo.c",      /* filename */
+        0              /* user data */
+    );
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>zlib/libpng license</licenseSummary>
+    <licenseUrl>https://github.com/floooh/sokol/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>sokol_gfx, sokol_app, sokol_fetch, sokol_audio</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/floooh/sokol</url>
+        <urlDescription>Repository (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/floooh/sokol/blob/master/sokol_log.h</url>
+        <urlDescription>Header documentation (sokol_log.h)</urlDescription>
+      </link>
+    </documentation>
+  </library>
 
 </libraries>
     </script>
