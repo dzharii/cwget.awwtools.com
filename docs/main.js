@@ -508,6 +508,7 @@
 
     const pre = document.createElement("pre");
     const code = document.createElement("code");
+    code.classList.add('microlight')
     code.textContent = text;
     pre.appendChild(code);
 
