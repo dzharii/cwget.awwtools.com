@@ -763,7 +763,7 @@
       related.className = "related";
       if (lib.worksWellWith.length > 0) {
         const relatedTitle = document.createElement("h4");
-        relatedTitle.textContent = "Works well with";
+        relatedTitle.textContent = "Related";
         related.appendChild(relatedTitle);
         const relatedList = document.createElement("div");
         relatedList.className = "related-list";

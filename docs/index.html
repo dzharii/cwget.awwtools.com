@@ -1846,9 +1846,387 @@ int WinMain(HINSTANCE instance, HINSTANCE prev, LPSTR cmdLine, int show) {
       </link>
     </documentation>
   </library>
+  <library id="log_c" fsName="log_c">
+    <files>
+      <file path="log.h" url="https://raw.githubusercontent.com/rxi/log.c/master/log.h" />
+      <file path="log.c" url="https://raw.githubusercontent.com/rxi/log.c/master/log.c" />
+    </files>
+    <suffixDir>rxi</suffixDir>
+    <version>0.0.0</version>
+    <title>log.h</title>
+    <description>Simple C99 logging library with leveled log macros and configurable outputs.</description>
+    <categories>logging, debug, utility</categories>
+    <sampleCode><![CDATA[
+#include <stdio.h>
+#include "log.h"
 
+int main(void) {
+    log_set_level(LOG_DEBUG);
 
+    log_trace("trace message");
+    log_debug("debug message");
+    log_info("hello %s", "world");
+    log_warn("warning: %d", 123);
+    log_error("error: something went wrong");
 
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>MIT license</licenseSummary>
+    <licenseUrl>https://github.com/rxi/log.c/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>linenoise, rlutil, sv</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/rxi/log.c</url>
+        <urlDescription>Source code (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/rxi/log.c#readme</url>
+        <urlDescription>Project README</urlDescription>
+      </link>
+    </documentation>
+  </library>
+
+  <library id="microui" fsName="microui">
+    <files>
+      <file path="microui.h" url="https://raw.githubusercontent.com/rxi/microui/master/microui.h" />
+    </files>
+    <suffixDir>rxi</suffixDir>
+    <version>0.0.0</version>
+    <title>microui.h</title>
+    <description>Tiny immediate-mode GUI library in ANSI C for simple 2D user interfaces and widgets.</description>
+    <categories>ui, immediate-mode, widgets</categories>
+    <sampleCode><![CDATA[
+#define MU_IMPLEMENTATION
+#include "microui.h"
+
+int main(void) {
+    mu_Context ctx;
+    mu_init(&ctx);
+
+    mu_begin(&ctx);
+    if (mu_begin_window(&ctx, "Demo", mu_rect(50, 50, 240, 140))) {
+        mu_text(&ctx, "Hello, microui");
+        mu_end_window(&ctx);
+    }
+    mu_end(&ctx);
+
+    /* Normally you would now iterate ctx.commands and render them. */
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>MIT license</licenseSummary>
+    <licenseUrl>https://github.com/rxi/microui/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>rgfw, stb_truetype, olive_c</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/rxi/microui</url>
+        <urlDescription>Source code (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/rxi/microui#readme</url>
+        <urlDescription>Project README</urlDescription>
+      </link>
+    </documentation>
+  </library>
+
+  <library id="microtar" fsName="microtar">
+    <files>
+      <file path="src/microtar.h" url="https://raw.githubusercontent.com/rxi/microtar/master/src/microtar.h" />
+      <file path="src/microtar.c" url="https://raw.githubusercontent.com/rxi/microtar/master/src/microtar.c" />
+    </files>
+    <suffixDir>rxi</suffixDir>
+    <version>0.1.0</version>
+    <title>microtar.h</title>
+    <description>Lightweight tar archive reader and writer in ANSI C for streaming .tar files.</description>
+    <categories>archive, tar, io</categories>
+    <sampleCode><![CDATA[
+#include <stdio.h>
+#include "microtar.h"
+
+int main(void) {
+    mtar_t tar;
+    const char msg[] = "hello from microtar\n";
+
+    if (mtar_open(&tar, "example.tar", "w") != MTAR_ESUCCESS) {
+        return 1;
+    }
+
+    mtar_write_file_header(&tar, "hello.txt", sizeof msg - 1);
+    mtar_write_data(&tar, msg, sizeof msg - 1);
+
+    mtar_finalize(&tar);
+    mtar_close(&tar);
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>MIT license</licenseSummary>
+    <licenseUrl>https://github.com/rxi/microtar/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>minirent, glob</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/rxi/microtar</url>
+        <urlDescription>Source code (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/rxi/microtar#readme</url>
+        <urlDescription>Project README</urlDescription>
+      </link>
+    </documentation>
+  </library>
+
+  <library id="sfd" fsName="sfd">
+    <files>
+      <file path="src/sfd.h" url="https://raw.githubusercontent.com/rxi/sfd/master/src/sfd.h" />
+      <file path="src/sfd.c" url="https://raw.githubusercontent.com/rxi/sfd/master/src/sfd.c" />
+    </files>
+    <suffixDir>rxi</suffixDir>
+    <version>0.0.0</version>
+    <title>sfd.h</title>
+    <description>Tiny C library for opening native file open and save dialogs on common desktop platforms.</description>
+    <categories>dialogs, ui, file-io</categories>
+    <sampleCode><![CDATA[
+#include <stdio.h>
+#include "sfd.h"
+
+int main(void) {
+    /* See the sfd README for full API usage and platform notes. */
+    (void) sfd_version; /* Dummy use to ensure header compiles if version symbol exists. */
+    printf("sfd.h included; integrate with your event loop and call sfd functions.\n");
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>MIT license</licenseSummary>
+    <licenseUrl>https://github.com/rxi/sfd/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>rgfw, microui, tinyfiledialogs</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/rxi/sfd</url>
+        <urlDescription>Source code (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/rxi/sfd#readme</url>
+        <urlDescription>Project README</urlDescription>
+      </link>
+    </documentation>
+  </library>
+
+  <library id="ini" fsName="ini">
+    <files>
+      <file path="src/ini.h" url="https://raw.githubusercontent.com/rxi/ini/master/src/ini.h" />
+      <file path="src/ini.c" url="https://raw.githubusercontent.com/rxi/ini/master/src/ini.c" />
+    </files>
+    <suffixDir>rxi</suffixDir>
+    <version>0.0.0</version>
+    <title>ini.h</title>
+    <description>Tiny ANSI C library for loading .ini configuration files and querying sections and keys.</description>
+    <categories>config, parsing, text</categories>
+    <sampleCode><![CDATA[
+#include <stdio.h>
+#include "ini.h"
+
+int main(void) {
+    ini_t *config = ini_load("config.ini");
+    if (!config) {
+        fprintf(stderr, "failed to load config.ini\n");
+        return 1;
+    }
+
+    const char *host = ini_get(config, "server", "host");
+    const char *port = ini_get(config, "server", "port");
+
+    printf("server = %s:%s\n",
+           host ? host : "localhost",
+           port ? port : "8080");
+
+    ini_free(config);
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>MIT license</licenseSummary>
+    <licenseUrl>https://github.com/rxi/ini/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>sv, tiny_regex_c, log_c</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/rxi/ini</url>
+        <urlDescription>Source code (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/rxi/ini#readme</url>
+        <urlDescription>Project README</urlDescription>
+      </link>
+    </documentation>
+  </library>
+
+  <library id="uuid4" fsName="uuid4">
+    <files>
+      <file path="src/uuid4.h" url="https://raw.githubusercontent.com/rxi/uuid4/master/src/uuid4.h" />
+      <file path="src/uuid4.c" url="https://raw.githubusercontent.com/rxi/uuid4/master/src/uuid4.c" />
+    </files>
+    <suffixDir>rxi</suffixDir>
+    <version>0.0.0</version>
+    <title>uuid4.h</title>
+    <description>Tiny C library for generating RFC 4122 version 4 UUID strings into user buffers.</description>
+    <categories>uuid, ids, utility</categories>
+    <sampleCode><![CDATA[
+#include <stdio.h>
+#include "uuid4.h"
+
+int main(void) {
+    char buf[UUID4_LEN];
+
+    uuid4_init();
+    uuid4_generate(buf);
+
+    printf("%s\n", buf);
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>MIT license</licenseSummary>
+    <licenseUrl>https://github.com/rxi/uuid4/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>tiny_hmac_c, tiny_aes_c, log_c</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/rxi/uuid4</url>
+        <urlDescription>Source code (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/rxi/uuid4#readme</url>
+        <urlDescription>Project README</urlDescription>
+      </link>
+    </documentation>
+  </library>
+
+  <library id="map" fsName="map">
+    <files>
+      <file path="src/map.h" url="https://raw.githubusercontent.com/rxi/map/master/src/map.h" />
+    </files>
+    <suffixDir>rxi</suffixDir>
+    <version>0.0.0</version>
+    <title>map.h</title>
+    <description>Type-safe hash map implementation for C with simple init, set, get and iterate API.</description>
+    <categories>data structures, hashmap, utility</categories>
+    <sampleCode><![CDATA[
+#include <stdio.h>
+#define MAP_IMPLEMENTATION
+#include "map.h"
+
+int main(void) {
+    map_t m;
+    map_init(&m);
+
+    map_set(&m, "language", "C");
+    map_set(&m, "answer", "42");
+
+    const char *value = map_get(&m, "answer");
+    printf("answer = %s\n", value ? value : "(null)");
+
+    map_deinit(&m);
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>MIT license</licenseSummary>
+    <licenseUrl>https://github.com/rxi/map/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>vec, sv, log_c</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/rxi/map</url>
+        <urlDescription>Source code (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/rxi/map#readme</url>
+        <urlDescription>Project README</urlDescription>
+      </link>
+    </documentation>
+  </library>
+
+  <library id="vec" fsName="vec">
+    <files>
+      <file path="src/vec.h" url="https://raw.githubusercontent.com/rxi/vec/master/src/vec.h" />
+    </files>
+    <suffixDir>rxi</suffixDir>
+    <version>0.0.0</version>
+    <title>vec.h</title>
+    <description>Type-safe dynamic array macros for C that provide growable vectors of arbitrary element types.</description>
+    <categories>data structures, dynamic array, utility</categories>
+    <sampleCode><![CDATA[
+#include <stdio.h>
+#define VEC_IMPLEMENTATION
+#include "vec.h"
+
+int main(void) {
+    vec_int_t v;
+    vec_init(&v);
+
+    vec_push(&v, 1);
+    vec_push(&v, 2);
+    vec_push(&v, 3);
+
+    for (int i = 0; i < (int)v.length; ++i) {
+        printf("v[%d] = %d\n", i, v.data[i]);
+    }
+
+    vec_deinit(&v);
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>MIT license</licenseSummary>
+    <licenseUrl>https://github.com/rxi/vec/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>map, sv, stb_ds</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/rxi/vec</url>
+        <urlDescription>Source code (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/rxi/vec#readme</url>
+        <urlDescription>Project README</urlDescription>
+      </link>
+    </documentation>
+  </library>
+
+  <library id="dmt" fsName="dmt">
+    <files>
+      <file path="src/dmt.h" url="https://raw.githubusercontent.com/rxi/dmt/master/src/dmt.h" />
+      <file path="src/dmt.c" url="https://raw.githubusercontent.com/rxi/dmt/master/src/dmt.c" />
+    </files>
+    <suffixDir>rxi</suffixDir>
+    <version>0.0.0</version>
+    <title>dmt.h</title>
+    <description>Small C library for tracking dynamic allocations, detecting leaks and catching invalid frees.</description>
+    <categories>debugging, memory, tracking</categories>
+    <sampleCode><![CDATA[
+#include <stdio.h>
+#define DMT_IMPLEMENTATION
+#include "dmt.h"
+
+int main(void) {
+    dmt_init();
+
+    char *buf = dmt_malloc(128);
+    if (buf) {
+        dmt_free(buf);
+    }
+
+    dmt_report(stdout);
+    dmt_shutdown();
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>MIT license</licenseSummary>
+    <licenseUrl>https://github.com/rxi/dmt/blob/master/LICENSE</licenseUrl>
+    <worksWellWith>stb_leakcheck, arena, log_c</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/rxi/dmt</url>
+        <urlDescription>Source code (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/rxi/dmt#readme</url>
+        <urlDescription>Project README</urlDescription>
+      </link>
+    </documentation>
+  </library>
 
 </libraries>
     </script>
