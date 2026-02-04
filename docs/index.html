@@ -2659,6 +2659,173 @@ int main(int argc, char **argv) {
     </documentation>
   </library>
 
+  <library id="md4c" fsName="md4c">
+    <files>
+      <file path="src/md4c.h" url="https://raw.githubusercontent.com/mity/md4c/master/src/md4c.h" />
+      <file path="src/md4c.c" url="https://raw.githubusercontent.com/mity/md4c/master/src/md4c.c" />
+    </files>
+    <suffixDir>mity</suffixDir>
+    <version>0.5.2</version>
+    <title>md4c.h</title>
+    <description>CommonMark compatible Markdown parser in C with a SAX style callback API and optional GitHub style extensions, implemented in one source file and one header.</description>
+    <categories>text, markdown, parsing</categories>
+    <sampleCode><![CDATA[
+#include <stdio.h>
+#include <string.h>
+
+#include "md4c.h"
+
+/* Very small demo which turns a subset of Markdown into HTML.
+ * Real code should escape HTML entities in MD_TEXT_NORMAL.
+ */
+
+static int on_enter_block(MD_BLOCKTYPE type, void *detail, void *userdata) {
+    (void)detail;
+    (void)userdata;
+
+    switch (type) {
+    case MD_BLOCK_DOC:
+        /* only body contents here */
+        break;
+    case MD_BLOCK_P:
+        fputs("<p>", stdout);
+        break;
+    case MD_BLOCK_H: {
+        const MD_BLOCK_H_DETAIL *h = (const MD_BLOCK_H_DETAIL *)detail;
+        printf("<h%u>", h->level);
+        break;
+    }
+    default:
+        break;
+    }
+    return 0;
+}
+
+static int on_leave_block(MD_BLOCKTYPE type, void *detail, void *userdata) {
+    (void)detail;
+    (void)userdata;
+
+    switch (type) {
+    case MD_BLOCK_P:
+        fputs("</p>\n", stdout);
+        break;
+    case MD_BLOCK_H: {
+        const MD_BLOCK_H_DETAIL *h = (const MD_BLOCK_H_DETAIL *)detail;
+        printf("</h%u>\n", h->level);
+        break;
+    }
+    default:
+        break;
+    }
+    return 0;
+}
+
+static int on_enter_span(MD_SPANTYPE type, void *detail, void *userdata) {
+    (void)detail;
+    (void)userdata;
+
+    switch (type) {
+    case MD_SPAN_EM:
+        fputs("<em>", stdout);
+        break;
+    case MD_SPAN_STRONG:
+        fputs("<strong>", stdout);
+        break;
+    default:
+        break;
+    }
+    return 0;
+}
+
+static int on_leave_span(MD_SPANTYPE type, void *detail, void *userdata) {
+    (void)detail;
+    (void)userdata;
+
+    switch (type) {
+    case MD_SPAN_EM:
+        fputs("</em>", stdout);
+        break;
+    case MD_SPAN_STRONG:
+        fputs("</strong>", stdout);
+        break;
+    default:
+        break;
+    }
+    return 0;
+}
+
+static int on_text(MD_TEXTTYPE type, const MD_CHAR *text, MD_SIZE size, void *userdata) {
+    (void)userdata;
+
+    switch (type) {
+    case MD_TEXT_NORMAL:
+    case MD_TEXT_CODE:
+        /* For a real HTML renderer, escape special characters here. */
+        fwrite(text, 1, size, stdout);
+        break;
+    case MD_TEXT_BR:
+        fputs("<br />\n", stdout);
+        break;
+    default:
+        /* ignore other text kinds in this tiny demo */
+        break;
+    }
+    return 0;
+}
+
+static void on_debug_log(const char *msg, void *userdata) {
+    (void)userdata;
+    fprintf(stderr, "md4c: %s\n", msg);
+}
+
+int main(void) {
+    const char *markdown =
+        "# Hello from MD4C\n"
+        "\n"
+        "This is **MD4C** parsing a small _Markdown_ string.\n";
+
+    MD_PARSER parser;
+    memset(&parser, 0, sizeof(parser));
+
+    parser.abi_version = 0;
+    parser.flags       = MD_DIALECT_COMMONMARK;
+
+    parser.enter_block = on_enter_block;
+    parser.leave_block = on_leave_block;
+    parser.enter_span  = on_enter_span;
+    parser.leave_span  = on_leave_span;
+    parser.text        = on_text;
+    parser.debug_log   = on_debug_log;
+    parser.syntax      = NULL;
+
+    int rc = md_parse(markdown, (MD_SIZE) strlen(markdown), &parser, NULL);
+    if (rc != 0) {
+        fprintf(stderr, "md_parse failed with code %d\n", rc);
+        return 1;
+    }
+
+    return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>MIT license</licenseSummary>
+    <licenseUrl>https://github.com/mity/md4c/blob/master/LICENSE.md</licenseUrl>
+    <worksWellWith>sv, tiny_regex_c, stb_sprintf</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/mity/md4c</url>
+        <urlDescription>Source code (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/mity/md4c#readme</url>
+        <urlDescription>Project README</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/mity/md4c/wiki/Embedding-Parser%3A-Calling-MD4C</url>
+        <urlDescription>Embedding and md_parse API notes</urlDescription>
+      </link>
+    </documentation>
+  </library>
+
 </libraries>
     </script>
   </section>
