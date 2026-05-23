@@ -2826,6 +2826,59 @@ int main(void) {
     </documentation>
   </library>
 
+  <library id="sp" fsName="sp">
+    <files>
+      <file path="sp.h" url="https://raw.githubusercontent.com/tspader/sp/main/sp.h" />
+    </files>
+    <suffixDir>tspader</suffixDir>
+    <version>0.0.0</version>
+    <title>sp.h</title>
+    <description>Single-header C99 utility library with strings, formatting, dynamic arrays, hash tables, filesystem helpers, IO, subprocesses, memory utilities, concurrency wrappers, UTF-8, globbing and file monitoring.</description>
+    <categories>standard library, utility, data structures</categories>
+    <sampleCode><![CDATA[
+#define SP_IMPLEMENTATION
+#include "sp.h"
+
+s32 main(void) {
+  sp_da(u32) years = sp_zero;
+
+  sp_da_push(years, 1969);
+  sp_da_push(years, 1972);
+
+  sp_da_for(years, it) {
+    sp_log("year: {}", sp_fmt_uint(years[it]));
+  }
+
+  sp_cstr_ht(s32) scores = sp_zero;
+  sp_cstr_ht_insert(scores, "veneta", 72);
+
+  s32* value = sp_cstr_ht_get(scores, "veneta");
+  if (value) {
+    sp_log("score: {}", sp_fmt_int(*value));
+  }
+
+  return 0;
+}
+    ]]></sampleCode>
+    <licenseSummary>MIT license</licenseSummary>
+    <licenseUrl>https://github.com/tspader/sp/blob/main/LICENSE</licenseUrl>
+    <worksWellWith>stb_ds, sv, arena, glob, minirent, log_c</worksWellWith>
+    <documentation>
+      <link>
+        <url>https://github.com/tspader/sp</url>
+        <urlDescription>Source code (GitHub)</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/tspader/sp#readme</url>
+        <urlDescription>Project README</urlDescription>
+      </link>
+      <link>
+        <url>https://github.com/tspader/sp/blob/main/sp.h</url>
+        <urlDescription>Main single-header source</urlDescription>
+      </link>
+    </documentation>
+  </library>
+
 </libraries>
     </script>
   </section>
